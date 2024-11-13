@@ -84,14 +84,74 @@ These namespaces serve different purposes, and I'll explain the differences clea
 
 This helps avoid conflicts and makes your XML code cleaner. Let me know if you need any more details!
 
-
-
-
-
-
 ---
+
+# Common Android Attributes
+
+### 📜 **Built-in Attributes (Core Android)**
+| **Attribute**                 | **Description**                                                 |
+|-------------------------------|-----------------------------------------------------------------|
+| `android:id`                  | Unique identifier for the view.                                 |
+| `android:layout_width`        | Specifies the width of the view (`match_parent`, `wrap_content`).|
+| `android:layout_height`       | Specifies the height of the view (`match_parent`, `wrap_content`).|
+| `android:text`                | Sets the text content of a `TextView`.                          |
+| `android:textColor`           | Sets the color of the text.                                     |
+| `android:textSize`            | Sets the size of the text.                                      |
+| `android:background`          | Sets the background color or drawable.                          |
+| `android:padding`             | Sets padding inside the view.                                   |
+| `android:margin`              | Sets margin outside the view (via `layout_margin`).             |
+| `android:gravity`             | Aligns content within the view (`center`, `left`, `right`).     |
+| `android:orientation`         | Sets the orientation (`horizontal`, `vertical` for layouts).    |
+| `android:visibility`          | Controls visibility (`visible`, `invisible`, `gone`).           |
+| `android:clickable`           | Determines if the view is clickable (`true`, `false`).          |
+| `android:src`                 | Sets the image source for `ImageView`.                          |
+| `android:contentDescription`  | Describes the view for accessibility purposes.                  |
+| `android:inputType`           | Specifies the type of data expected in an input field (e.g., `text`, `number`).|
+| `android:hint`                | Placeholder text for input fields.                              |
+| `android:maxLines`            | Sets the maximum number of lines in a `TextView`.               |
+| `android:ellipsize`           | Adds ellipsis (`...`) if text is too long.                      |
+| `android:scaleType`           | Controls how an image is scaled in an `ImageView`.              |
+| `android:elevation`           | Sets the shadow effect (elevation) of the view.                 |
+
+### 📦 **External Attributes (`xmlns:app` - Custom Libraries)**
+| **Attribute**                        | **Description**                                                 |
+|--------------------------------------|-----------------------------------------------------------------|
+| `app:layout_constraintTop_toTopOf`   | Aligns the top of the view to the top of another view (ConstraintLayout).|
+| `app:layout_constraintBottom_toBottomOf` | Aligns the bottom of the view to the bottom of another view (ConstraintLayout).|
+| `app:cornerRadius`                   | Sets the corner radius for a `MaterialCardView`.                |
+| `app:fabSize`                        | Sets the size of a Floating Action Button (FAB).                |
+| `app:srcCompat`                      | Sets the image source for `ImageView` with compatibility support.|
+| `app:layout_behavior`                | Defines behavior for `CoordinatorLayout` (e.g., scrolling).     |
+| `app:showAsAction`                   | Controls how an item is displayed in the ActionBar.             |
+| `app:chipIcon`                       | Sets the icon for a `Chip` component.                           |
+| `app:tabIndicatorColor`              | Sets the color of the tab indicator in a `TabLayout`.           |
+| `app:toolbarNavigationButtonStyle`   | Customizes the navigation button style in a `Toolbar`.          |
+| `app:shimmer_color`                  | Sets the shimmer effect color in `ShimmerFrameLayout`.          |
+| `app:badgeTextColor`                 | Sets the text color for a `Badge` in `BottomNavigationView`.    |
+| `app:layoutManager`                  | Defines the layout manager for a `RecyclerView` (e.g., `LinearLayoutManager`).|
+| `app:progressIndicatorStyle`         | Sets the style for a progress indicator (`CircularProgressIndicator`).|
+
+### 🔍 **Popular Libraries and Their Attributes**
+1. **ConstraintLayout (`app:layout_constraint*`)**: Provides advanced positioning attributes for UI elements.
+2. **Material Components (`app:cornerRadius`, `app:strokeColor`)**: Offers attributes for styling Material Design components.
+3. **Glide/Picasso (`app:placeholder`, `app:errorImage`)**: Image loading libraries with custom attributes for placeholder and error images.
+4. **Navigation Component (`app:navGraph`, `app:startDestination`)**: Attributes for setting up navigation graphs.
+
+### 📖 **Conclusion**
+This is a **summary of commonly used attributes**. For a complete list:
+- Refer to the official [Android Developer Documentation](https://developer.android.com/reference).
+- Explore third-party library documentation (e.g., Material Components, ConstraintLayout) for their attributes.
+
+
+
+
+
+
+
+
 <!-- ================================================================= -->
 
+---
 
 ## Previous Rough Notes
 
