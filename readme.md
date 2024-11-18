@@ -728,7 +728,7 @@ You use `getSupportFragmentManager()` to properly obtain and manage fragments in
   - **ViewModel**: Acts as a bridge between the Model and View, managing the UI-related data lifecycle-aware.
 
 **Role of ViewModel:**
-- ViewModel stores and manages UI-related data in a lifecycle-conscious way.
+- ViewModel stores and manages UI-related data in a `lifecycle-conscious` way.
 - It survives configuration changes (e.g., screen rotation) and helps avoid memory leaks.
 
 **MVVM Example:**
@@ -1741,7 +1741,173 @@ val file = File(filesDir, "user_data.txt")
 val content = file.readText()
 Log.d("FileContent", content)
 ```
+---
 
+## Communication Between Two Activities
+
+Here's how you can create two activities in an Android application using Java, where one activity contains a form, and the other activity displays the data entered in the form.
+
+### **Step 1: Setup the Project**
+1. Create a new Android project in Android Studio.
+2. In the `res/layout` folder, create two XML layout files: `activity_main.xml` (for the form) and `activity_display.xml` (for displaying data).
+
+### **Step 2: Define the Layouts**
+
+#### **activity_main.xml (Form Layout)**
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/etName"
+        android:hint="Enter your name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:hint="Enter your email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:text="Submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+```
+
+#### **activity_display.xml (Display Layout)**
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tvEmail"
+        android:textSize="18sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+```
+
+### **Step 3: Create the Activities**
+
+#### **MainActivity.java (Form Activity)**
+```java
+package com.example.myapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText etName, etEmail;
+    private Button btnSubmit;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        etName = findViewById(R.id.etName);
+        etEmail = findViewById(R.id.etEmail);
+        btnSubmit = findViewById(R.id.btnSubmit);
+
+        btnSubmit.setOnClickListener(view -> {
+            String name = etName.getText().toString();
+            String email = etEmail.getText().toString();
+
+            // Create an Intent to start DisplayActivity
+            Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("email", email);
+
+            // Start the DisplayActivity
+            startActivity(intent);
+        });
+    }
+}
+```
+
+#### **DisplayActivity.java (Display Data Activity)**
+```java
+package com.example.myapp;
+
+import android.os.Bundle;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class DisplayActivity extends AppCompatActivity {
+
+    private TextView tvName, tvEmail;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_display);
+
+        tvName = findViewById(R.id.tvName);
+        tvEmail = findViewById(R.id.tvEmail);
+
+        // Get the data from the Intent
+        String name = getIntent().getStringExtra("name");
+        String email = getIntent().getStringExtra("email");
+
+        // Set the data to TextViews
+        tvName.setText("Name: " + name);
+        tvEmail.setText("Email: " + email);
+    }
+}
+```
+
+### **Step 4: Update `AndroidManifest.xml`**
+Make sure to declare both activities in the `AndroidManifest.xml` file.
+
+```xml
+<application
+    ...>
+    <activity android:name=".MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity android:name=".DisplayActivity" />
+</application>
+```
+
+### **How It Works**
+1. The form is created in `MainActivity` with two input fields (`EditText`) for the user to enter their name and email.
+2. When the "Submit" button is clicked, the data is passed to `DisplayActivity` using an `Intent` with `putExtra()`.
+3. `DisplayActivity` retrieves the data using `getIntent().getStringExtra()` and displays it in `TextView`.
+
+### **Output**
+1. The user enters their name and email in the form.
+2. After clicking "Submit," the second activity opens and shows the entered data.
+
+This is a simple way to communicate between two activities in Android using Java.
+
+
+
+---
 ### Main Differences Between Activity and Fragment in Android
 
 | **Feature**                | **Activity**                                   | **Fragment**                                      |
