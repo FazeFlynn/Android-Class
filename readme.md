@@ -815,6 +815,8 @@ You use `getSupportFragmentManager()` to properly obtain and manage fragments in
   - Tasks are executed independently of the main thread.
   - The next task does not wait for the current task to complete.
   - **Example**: Fetching data from a server without blocking the UI thread.
+
+
 Here's the Kotlin version of the synchronous and asynchronous code example using coroutines:
 
 #### Synchronous Example (Kotlin)
@@ -866,6 +868,7 @@ Start
 End
 Fetching data...
 ```
+In Kotlin, `suspend functions` are functions that can pause their execution and resume later `without blocking the thread`. They are used in coroutines to perform asynchronous or non-blocking operations, such as network calls, database queries, or I/O operations, in a more efficient manner than using threads.
 
 #### Explanation:
 - **Synchronous Code**: The `Thread.sleep()` method blocks the main thread, making the program wait before proceeding.
@@ -910,6 +913,8 @@ fun main() = runBlocking {
 // Hello
 // Coroutine!
 ```
+
+**Coroutines** in Kotlin are a lightweight way to handle asynchronous programming, allowing you to run tasks concurrently without blocking the main thread. They simplify tasks like network requests, database operations, and long-running computations by using suspend functions and managing execution in a non-blocking manner.
 
 ---
 
@@ -1431,6 +1436,68 @@ Title: Kotlin Programming, Author: Jane Smith
 ```gradle
 implementation 'org.jsoup:jsoup:1.15.4'
 ```
+`java`
+```java
+import android.util.Xml;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.StringReader;
+
+public class XMLParser {
+
+    public static void parseXML(String xmlData) {
+        XmlPullParser parser = Xml.newPullParser();
+        try {
+            parser.setInput(new StringReader(xmlData));
+            int eventType = parser.getEventType();
+            String title = "";
+            String author = "";
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String tagName = parser.getName();
+
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        if ("title".equals(tagName)) {
+                            title = parser.nextText();
+                        } else if ("author".equals(tagName)) {
+                            author = parser.nextText();
+                        }
+                        break;
+
+                    case XmlPullParser.END_TAG:
+                        if ("book".equals(tagName)) {
+                            System.out.println("Title: " + title + ", Author: " + author);
+                        }
+                        break;
+                }
+
+                eventType = parser.next();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        String xmlData = "<library>" +
+                         "<book><title>Effective Java</title><author>Joshua Bloch</author></book>" +
+                         "<book><title>Clean Code</title><author>Robert C. Martin</author></book>" +
+                         "</library>";
+
+        parseXML(xmlData);
+    }
+}
+```
+Output:
+
+```yaml
+Title: Effective Java, Author: Joshua Bloch
+Title: Clean Code, Author: Robert C. Martin
+```
+
 
 **HTML Parsing Code**:
 ```kotlin
