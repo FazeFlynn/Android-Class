@@ -1756,6 +1756,7 @@ $$
 **Deep linking** is a technique that allows an Android application to directly navigate to a specific content or page within the app, using a URL or an intent. It helps users land on the desired section of the app without going through multiple steps, improving the user experience.
 
 #### **Types of Deep Linking:**
+`TUD`
 1. **Traditional Deep Linking**:
    - Uses a specific URL (e.g., `myapp://profile/123`) to open a specific part of the app.
    - Works only if the app is already installed.
