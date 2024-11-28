@@ -2799,6 +2799,10 @@ A **memory leak** occurs when an object is no longer needed but isn't garbage co
    }
    ```
 
+
+
+
+
 ### **Enhancing Map Experience**
 
 1. **Markers**:
@@ -2841,7 +2845,13 @@ A **memory leak** occurs when an object is no longer needed but isn't garbage co
          .tilt(30)    // Tilt angle
          .build();
      mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+   
      ```
+## key methods
+1. `Marker addMarker(MarkerOptions options)`
+2. `void moveCamera(CameraUpdate update)`
+3. `void moveCamera(CameraUpdate update)`
+4. `void animateCamera(CameraUpdate update)`
 
 ### **Scenario Examples**
 1. **Delivery App**:
@@ -2969,6 +2979,10 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     }
 }
 ```
+
+## key methods
+1. `public boolean registerListener(SensorEventListener listener, Sensor sensor, int samplingPeriodUs)`
+2. `public void unregisterListener(SensorEventListener listener)`
 
 #### **3. Layout File (`activity_sensor.xml`)**:
 ```xml
@@ -3192,7 +3206,7 @@ By following these practices, you can ensure that your Android app runs smoothly
 
 ---
 
-### Q.2 (CO5) Explain the process of creating and managing alarms in Android using the AlarmManager. Discuss both one-time and repeating alarms with examples.
+### Q.2 Explain the process of creating and managing alarms in Android using the AlarmManager. Discuss both one-time and repeating alarms with examples.
 
 The `AlarmManager` in Android is used to schedule tasks at specific times, even if the app is not running. It supports both **one-time alarms** and **repeating alarms**.
 
@@ -3231,6 +3245,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 }
 ```
+## key methods
+1. `void setExact(int type, long triggerAtMillis, PendingIntent operation)`
+2. `void setRepeating(int type, long triggerAtMillis, long intervalMillis, PendingIntent operation)`
+
 
 #### **Real-Life Scenario**
 - A **meditation app** sets a reminder for the user to meditate at a specific time.
@@ -3352,6 +3370,11 @@ auth.signInWithEmailAndPassword(email, password)
         }
     });
 ```
+
+## Key Methods
+
+1. `Task<AuthResult> signInWithEmailAndPassword(@NonNull String email, @NonNull String password)`
+2. `Task<AuthResult> createUserWithEmailAndPassword(@NonNull String email, @NonNull String password)`
 
 #### **Real-Life Scenario**
 - A **social media app** allows users to sign in using Google or email/password.
