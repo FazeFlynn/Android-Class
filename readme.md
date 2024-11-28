@@ -2981,8 +2981,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 ```
 
 ### key methods
-1. `public boolean registerListener(SensorEventListener listener, Sensor sensor, int samplingPeriodUs)`
-2. `public void unregisterListener(SensorEventListener listener)`
+1. public boolean `registerListener`(SensorEventListener listener, Sensor sensor, int samplingPeriodUs)
+2. public void `unregisterListener`(SensorEventListener listener)
 
 #### **3. Layout File (`activity_sensor.xml`)**:
 ```xml
