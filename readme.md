@@ -2519,7 +2519,7 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
 }
 ```
 
-### Key methods
+#### key methods
 requestPermissions: `requestPermissions(@NonNull Activity activity, @NonNull String[] permissions, int requestCode)`
 
 ---
@@ -2847,7 +2847,7 @@ A **memory leak** occurs when an object is no longer needed but isn't garbage co
      mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
    
      ```
-## key methods
+### key methods
 1. `Marker addMarker(MarkerOptions options)`
 2. `void moveCamera(CameraUpdate update)`
 3. `void moveCamera(CameraUpdate update)`
@@ -2980,7 +2980,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 }
 ```
 
-## key methods
+### key methods
 1. `public boolean registerListener(SensorEventListener listener, Sensor sensor, int samplingPeriodUs)`
 2. `public void unregisterListener(SensorEventListener listener)`
 
@@ -3245,7 +3245,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 }
 ```
-## key methods
+### key methods
 1. `void setExact(int type, long triggerAtMillis, PendingIntent operation)`
 2. `void setRepeating(int type, long triggerAtMillis, long intervalMillis, PendingIntent operation)`
 
@@ -3371,7 +3371,7 @@ auth.signInWithEmailAndPassword(email, password)
     });
 ```
 
-## Key Methods
+### key methods
 
 1. `Task<AuthResult> signInWithEmailAndPassword(@NonNull String email, @NonNull String password)`
 2. `Task<AuthResult> createUserWithEmailAndPassword(@NonNull String email, @NonNull String password)`
@@ -3498,7 +3498,7 @@ By leveraging Firebase services, Android developers can focus more on building r
 
 ---
 
-## Key Methods compilation
+### key methods compilation
 
 Below is the **list of method declarations** for all the methods mentioned so far in our discussion. These declarations include their parameter types and modifiers:
 
