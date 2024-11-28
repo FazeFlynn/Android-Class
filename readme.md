@@ -2519,6 +2519,9 @@ public void onRequestPermissionsResult(int requestCode, String[] permissions, in
 }
 ```
 
+### Key methods
+requestPermissions: `requestPermissions(@NonNull Activity activity, @NonNull String[] permissions, int requestCode)`
+
 ---
 
 ### Q.2 **What are secure coding practices? Provide two examples relevant to Android development.**
@@ -3470,6 +3473,141 @@ Firebase simplifies backend integration for Android apps by offering:
 
 By leveraging Firebase services, Android developers can focus more on building rich app experiences without worrying about backend complexity.
 
+---
+
+## Key Methods compilation
+
+Below is the **list of method declarations** for all the methods mentioned so far in our discussion. These declarations include their parameter types and modifiers:
+
+
+## **1. `ActivityCompat.requestPermissions()`**
+```java
+public static void requestPermissions(@NonNull Activity activity, 
+                                      @NonNull String[] permissions, 
+                                      int requestCode)
+```
+
+
+### **2. `FragmentTransaction.add()`**
+```java
+public abstract FragmentTransaction add(int containerViewId, Fragment fragment)
+```
+
+```java
+public abstract FragmentTransaction add(int containerViewId, Fragment fragment, String tag)
+```
+
+
+### **3. `FragmentTransaction.remove()`**
+```java
+public abstract FragmentTransaction remove(Fragment fragment)
+```
+
+
+
+### **4. `FragmentTransaction.replace()`**
+```java
+public abstract FragmentTransaction replace(int containerViewId, Fragment fragment)
+```
+
+```java
+public abstract FragmentTransaction replace(int containerViewId, Fragment fragment, String tag)
+```
+
+
+
+### **5. `FragmentTransaction.commit()`**
+```java
+public abstract int commit()
+```
+
+
+
+### **6. `AlarmManager.setExact()`**
+```java
+public void setExact(int type, long triggerAtMillis, PendingIntent operation)
+```
+
+
+
+### **7. `AlarmManager.setRepeating()`**
+```java
+public void setRepeating(int type, long triggerAtMillis, long intervalMillis, PendingIntent operation)
+```
+
+
+
+### **8. `FirebaseAuth.signInWithEmailAndPassword()`**
+```java
+public Task<AuthResult> signInWithEmailAndPassword(@NonNull String email, 
+                                                   @NonNull String password)
+```
+
+
+
+### **9. `FirebaseAuth.createUserWithEmailAndPassword()`**
+```java
+public Task<AuthResult> createUserWithEmailAndPassword(@NonNull String email, 
+                                                       @NonNull String password)
+```
+
+
+
+### **10. `FirebaseDatabase.getInstance()`**
+```java
+public static FirebaseDatabase getInstance()
+```
+
+
+
+### **11. `FirebaseStorage.getInstance()`**
+```java
+public static FirebaseStorage getInstance()
+```
+
+
+
+### **12. `GoogleMap.addMarker()`**
+```java
+public final Marker addMarker(MarkerOptions options)
+```
+
+
+
+### **13. `GoogleMap.moveCamera()`**
+```java
+public final void moveCamera(CameraUpdate update)
+```
+
+
+
+### **14. `GoogleMap.animateCamera()`**
+```java
+public final void animateCamera(CameraUpdate update)
+```
+
+
+
+### **15. `SensorManager.registerListener()`**
+```java
+public boolean registerListener(SensorEventListener listener, 
+                                Sensor sensor, 
+                                int samplingPeriodUs)
+```
+
+
+
+### **16. `SensorManager.unregisterListener()`**
+```java
+public void unregisterListener(SensorEventListener listener)
+```
+
+
+
+This list encompasses all relevant methods discussed so far in detail, including their parameter descriptions in earlier responses. Let me know if you'd like further clarifications!
+
+
+
 
 
 
@@ -3482,7 +3620,10 @@ By leveraging Firebase services, Android developers can focus more on building r
 
 ---
 ---
+---
+---
 
+<!-- ================================================================================================== -->
 
 
 ## Previous Rough Notes
