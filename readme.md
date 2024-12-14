@@ -3626,10 +3626,3633 @@ public void unregisterListener(SensorEventListener listener)
 ```
 
 
+# Unit 5
 
-This list encompasses all relevant methods discussed so far in detail, including their parameter descriptions in earlier responses. Let me know if you'd like further clarifications!
+### **Lecture 35 - Introduction to Permissions and Security**  
+
+#### **1. Understanding Android Permission System**  
+**Definition**:  
+The Android Permission System ensures user privacy and security by restricting app access to sensitive device data and resources (e.g., camera, location, storage). Apps must request explicit user approval to use such features.  
+
+**Types of Permissions**:  
+1. **Normal Permissions**: Automatically granted by the system (e.g., accessing the internet).  
+2. **Dangerous Permissions**: Require explicit user consent (e.g., accessing location, camera, or storage).  
+
+**Steps to Request and Handle Permissions**:  
+1. **Declare Permission in `AndroidManifest.xml`**:
+   ```xml
+   <uses-permission android:name="android.permission.CAMERA" />
+   ```
+2. **Request Permission at Runtime (Post Android 6.0)**:
+   - **Java**:
+     ```java
+     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+         != PackageManager.PERMISSION_GRANTED) {
+         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+     }
+     ```
+   - **Kotlin**:
+     ```kotlin
+     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) 
+         != PackageManager.PERMISSION_GRANTED) {
+         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 1)
+     }
+     ```
+3. **Handle User Response**:  
+   - **Java**:
+     ```java
+     @Override
+     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+             // Permission granted
+         } else {
+             // Permission denied
+         }
+     }
+     ```
+   - **Kotlin**:
+     ```kotlin
+     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+         if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+             // Permission granted
+         } else {
+             // Permission denied
+         }
+     }
+     ```
+
+**Real-Life Scenario**:  
+An app needs camera access for taking pictures. Users will be prompted to grant permission when the feature is accessed.  
+
+---
+
+#### **2. Secure Coding Practices**  
+Secure coding minimizes vulnerabilities and ensures user data safety.  
+
+**Key Practices**:  
+1. **Input Validation**:  
+   Always validate user inputs to prevent injection attacks (e.g., SQL Injection, XSS).  
+   - **Example**:  
+     - **Java**:  
+       ```java
+       String userInput = editText.getText().toString();
+       if (userInput.matches("[a-zA-Z0-9]*")) {
+           // Safe input
+       }
+       ```
+     - **Kotlin**:  
+       ```kotlin
+       val userInput = editText.text.toString()
+       if (userInput.matches(Regex("[a-zA-Z0-9]*"))) {
+           // Safe input
+       }
+       ```
+2. **Data Encryption**:  
+   Encrypt sensitive data before storing or transferring it. Use libraries like `Cipher` in Java/Kotlin for encryption.  
+   - **Example**:  
+     - **Java**:  
+       ```java
+       Cipher cipher = Cipher.getInstance("AES");
+       cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+       byte[] encryptedData = cipher.doFinal(data.getBytes());
+       ```
+     - **Kotlin**:  
+       ```kotlin
+       val cipher = Cipher.getInstance("AES")
+       cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+       val encryptedData = cipher.doFinal(data.toByteArray())
+       ```
+
+**Real-Life Scenario**:  
+Securely storing user credentials or sensitive data like credit card information.  
+
+---
+
+#### **Use Cases**:  
+1. Permissions:  
+   - Accessing sensitive device features like GPS for navigation or camera for photo capture.  
+2. Secure Coding Practices:  
+   - Preventing unauthorized access or data leaks in apps like banking or health-tracking applications.  
+
+---
+
+#### **Best Practices**:  
+1. Always check for permissions at runtime for a smooth user experience.  
+2. Use least privilege by requesting only essential permissions.  
+3. Implement input sanitization and encryption wherever sensitive data is handled.  
+
+---
+
+### **Lecture 36: App Performance Optimization**
+
+#### **1. Identifying Performance Bottlenecks**
+Performance bottlenecks can degrade user experience. To optimize your Android app, identify and resolve these bottlenecks. Common tools and issues include:
+
+- **Tools for Profiling:**
+  - **Android Profiler:** Available in Android Studio, helps monitor CPU, memory, and network usage.
+  - **LeakCanary:** Detects memory leaks.
+  - **Systrace:** Captures system and app performance for advanced analysis.
+
+- **Memory Leaks:**
+  - Caused by improper object references that prevent garbage collection.
+  - **Impact:** Increased memory usage leading to app crashes.
+  - **Solution:** Use weak references, close resources, and unbind views in `onDestroy`.
+
+**Example (Java):**  
+```java
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    myView = null;  // Prevent memory leaks
+}
+```
+
+**Example (Kotlin):**  
+```kotlin
+override fun onDestroy() {
+    super.onDestroy()
+    myView = null // Prevent memory leaks
+}
+```
+
+---
+
+#### **2. Optimizing UI Rendering and Layout**
+Efficient use of Views and ViewGroups improves rendering performance.
+
+- **Best Practices:**
+  - Use **ConstraintLayout** instead of nested LinearLayouts to reduce rendering time.
+  - Avoid overdraws by designing flat layouts.
+  - Use `ViewStub` for loading large views conditionally.
+  - Minimize the use of custom views unless necessary.
+
+**Example (Efficient Layout XML):**  
+```xml
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/sample_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Optimized Layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+
+**Use Case:**  
+Building smooth and responsive UIs for apps with complex layouts, such as e-commerce or social media apps.
+
+---
+
+#### **3. Network Optimization Techniques**
+Efficient handling of network requests is vital for performance.
+
+- **Techniques:**
+  - Use caching with **Retrofit** or **OkHttp** to minimize repeated API calls.
+  - Compress and batch data transfers.
+  - Implement pagination for large datasets.
+
+**Example (Caching with Retrofit):**
+```java
+OkHttpClient client = new OkHttpClient.Builder()
+    .cache(new Cache(context.getCacheDir(), cacheSize))
+    .build();
+
+Retrofit retrofit = new Retrofit.Builder()
+    .baseUrl("https://api.example.com/")
+    .client(client)
+    .build();
+```
+
+**Example (Kotlin):**
+```kotlin
+val cache = Cache(application.cacheDir, cacheSize)
+val client = OkHttpClient.Builder()
+    .cache(cache)
+    .build()
+
+val retrofit = Retrofit.Builder()
+    .baseUrl("https://api.example.com/")
+    .client(client)
+    .build()
+```
+
+**Real-Life Scenario:**  
+A news app that fetches articles periodically can use caching to load previously fetched data offline.
+
+---
+
+#### **Key Takeaways:**
+- **Profiling Tools:** Android Profiler, LeakCanary, and Systrace help in identifying and resolving bottlenecks.
+- **Memory Management:** Avoid memory leaks by managing object references and cleaning up resources.
+- **UI Optimization:** Use efficient layouts and avoid nesting.
+- **Network Optimization:** Implement caching and reduce redundant API calls.
+
+---
+
+### **Lecture 37: Google Maps and Location Services**
+
+#### **1. Integrating Google Maps API**
+Google Maps API enables developers to add interactive maps to Android applications.
+
+- **Steps to Integrate:**
+  1. **Get an API Key:**  
+     - Visit the [Google Cloud Console](https://console.cloud.google.com/).
+     - Create a new project and enable the Maps SDK for Android.
+     - Generate and restrict the API key for security.
+  2. **Add Dependencies:**  
+     Add the Google Maps dependency in `build.gradle`:
+     ```groovy
+     implementation 'com.google.android.gms:play-services-maps:18.0.2'
+     ```
+  3. **Update Manifest:**  
+     Provide permissions and metadata in `AndroidManifest.xml`:
+     ```xml
+     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+     <meta-data
+         android:name="com.google.android.geo.API_KEY"
+         android:value="YOUR_API_KEY" />
+     ```
+  4. **Add Map Fragment:**  
+     Include a `MapFragment` in your layout:
+     ```xml
+     <fragment
+         android:id="@+id/map"
+         android:name="com.google.android.gms.maps.SupportMapFragment"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent" />
+     ```
+  5. **Initialize in Code:**
+     ```java
+     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+         .findFragmentById(R.id.map);
+     mapFragment.getMapAsync(googleMap -> {
+         googleMap.addMarker(new MarkerOptions().position(new LatLng(37.7749, -122.4194)).title("San Francisco"));
+         googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(37.7749, -122.4194)));
+     });
+     ```
+
+**Use Case:**  
+Display a map with markers for locations like stores or landmarks.
+
+---
+
+#### **2. Understanding Location Services**
+Android’s Location Services allow apps to access the user's current location using GPS or network-based methods.
+
+- **Types of Location Providers:**
+  1. **GPS Provider:**  
+     Uses satellite signals; provides high accuracy outdoors but consumes more battery.
+  2. **Network Provider:**  
+     Uses Wi-Fi or mobile network; less accurate but works indoors and consumes less battery.
+
+- **Implementation Example:**  
+  **Permissions in Manifest:**
+  ```xml
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  ```
+
+  **Code to Get Location:**
+  ```java
+  FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+  fusedLocationClient.getLastLocation()
+      .addOnSuccessListener(location -> {
+          if (location != null) {
+              double latitude = location.getLatitude();
+              double longitude = location.getLongitude();
+              Log.d("Location", "Lat: " + latitude + ", Lng: " + longitude);
+          }
+      });
+  ```
+
+  **Kotlin Version:**
+  ```kotlin
+  val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+  fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+      location?.let {
+          val latitude = it.latitude
+          val longitude = it.longitude
+          Log.d("Location", "Lat: $latitude, Lng: $longitude")
+      }
+  }
+  ```
+
+**Real-Life Scenario:**  
+An app providing navigation or geotagging services, like Uber or Google Maps.
+
+---
+
+#### **3. Permission Considerations for Location Access**
+Accessing location requires runtime permissions due to user privacy concerns.
+
+- **Best Practices:**
+  1. Request only the necessary permissions (`ACCESS_FINE_LOCATION` for high accuracy, `ACCESS_COARSE_LOCATION` for approximate location).
+  2. Show a rationale for location usage if needed:
+     ```java
+     if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+         // Explain why the permission is required
+     }
+     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+     ```
+
+- **Use Case:**  
+Ensure that users understand why location permissions are being requested to improve app trustworthiness.
+
+---
+
+#### **Key Features to Enhance the Map Experience**
+1. **Markers:** Highlight points of interest.  
+   Example:
+   ```java
+   googleMap.addMarker(new MarkerOptions().position(new LatLng(40.7128, -74.0060)).title("New York City"));
+   ```
+
+2. **Routes:** Draw paths between locations using the Directions API.
+
+3. **Camera Positioning:** Focus the map on specific areas.  
+   Example:
+   ```java
+   googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(40.7128, -74.0060), 10));
+   ```
+
+---
+
+#### **Key Takeaways:**
+- **Google Maps API** enables adding maps with markers, routes, and camera controls.
+- **Location Services** use GPS and network-based providers to fetch user locations.
+- **Permission Management** is crucial for handling location access securely.
+
+---
+
+### **Lecture 38: Sensors and Data Acquisition**
+
+---
+
+#### **1. Introduction to Android Sensors**
+Android devices are equipped with hardware sensors to provide data about the environment and device motion.
+
+- **Types of Sensors in Android:**
+  1. **Motion Sensors:**  
+     Measure acceleration and rotational forces.  
+     Examples: Accelerometer, Gyroscope.
+  2. **Environmental Sensors:**  
+     Measure environmental parameters.  
+     Examples: Ambient Light Sensor, Proximity Sensor.
+  3. **Position Sensors:**  
+     Measure physical position of the device.  
+     Examples: Magnetometer, Orientation Sensor.
+
+**Use Case:**  
+- Fitness apps use accelerometers to track steps.  
+- Gaming apps use gyroscopes for motion control.
+
+---
+
+#### **2. Sensor Event Handling and Data Reading**
+
+To use sensors in Android, the `SensorManager` class is used to access and handle sensor data.
+
+- **Steps to Handle Sensor Events:**
+  1. **Add Permission (if needed):**  
+     Most sensors don’t require permissions, but some environmental sensors may.
+  2. **Access the SensorManager:**  
+     Use `SensorManager` to get sensors.
+  3. **Register Sensor Listener:**  
+     Implement the `SensorEventListener` interface to read sensor data.
+
+**Code Example in Java:**  
+```java
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        if (accelerometer != null) {
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        Log.d("Accelerometer", "X: " + x + ", Y: " + y + ", Z: " + z);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+}
+```
+
+**Code Example in Kotlin:**  
+```kotlin
+class MainActivity : AppCompatActivity(), SensorEventListener {
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
+        accelerometer?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        event?.let {
+            val x = it.values[0]
+            val y = it.values[1]
+            val z = it.values[2]
+            Log.d("Accelerometer", "X: $x, Y: $y, Z: $z")
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+}
+```
+
+**Real-Life Scenario:**  
+- An accelerometer detects device orientation changes to switch between portrait and landscape modes.
+- A gyroscope enables precise motion tracking for VR or gaming apps.
+
+---
+
+#### **3. Building Sensor-Based Applications**
+
+Sensor data can be used to create interactive applications like motion-controlled games or health tracking apps.
+
+- **Example: Step Counter (Pedometer App):**
+  - Use the accelerometer to detect movement and count steps.
+  - Example Java Code:
+    ```java
+    if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+
+        double magnitude = Math.sqrt(x * x + y * y + z * z);
+        if (magnitude > THRESHOLD) {
+            stepCount++;
+            Log.d("StepCounter", "Steps: " + stepCount);
+        }
+    }
+    ```
+
+- **Motion-Controlled Game:**  
+   Use gyroscope to detect tilt and rotation for controlling game characters.
+
+**Scenario:**  
+In a racing game, tilting the phone left or right steers the vehicle.
+
+---
+
+#### **Key Considerations for Using Sensors**
+1. **Battery Usage:**  
+   - Use appropriate `SensorManager` delay constants (`SENSOR_DELAY_NORMAL`, `SENSOR_DELAY_UI`) to optimize battery.
+2. **Accuracy and Calibration:**  
+   - Sensor data can vary based on device hardware. Calibrate sensors for consistent readings.
+3. **Data Filtering:**  
+   - Apply low-pass filters to smooth raw sensor data for better accuracy.
+
+---
+
+#### **Key Takeaways:**
+- **Android Sensors** provide rich data for motion, environment, and position.
+- **SensorManager** handles sensor registration and data retrieval.
+- **Interactive Apps** like fitness trackers or motion-controlled games leverage sensor data for enhanced user experiences.
+
+---
+
+### **Lecture 39: Background Tasks and Notifications**
+
+---
+
+#### **1. WorkManager: Scheduling and Executing Background Tasks**
+WorkManager is the recommended solution for deferrable and guaranteed background work in Android, especially for tasks that need reliable execution, even if the app exits or the device restarts.
+
+- **Use Cases:**  
+  1. Periodic sync of data with a server.  
+  2. Uploading logs or images when the device is connected to Wi-Fi.  
+
+- **Types of Work:**
+  1. **One-time Work:** Tasks that run only once.  
+  2. **Periodic Work:** Tasks that run repeatedly at specific intervals.
+
+**Steps to Implement WorkManager:**
+1. Define the work by extending `Worker` or using `Worker` classes.  
+2. Schedule the work using `WorkManager`.  
+3. Observe work status using `LiveData`.
+
+**Code Example in Java:**  
+```java
+public class UploadWorker extends Worker {
+    public UploadWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
+
+    @NonNull
+    @Override
+    public Result doWork() {
+        // Background task
+        uploadData();
+        return Result.success();
+    }
+
+    private void uploadData() {
+        Log.d("WorkManager", "Data uploaded successfully");
+    }
+}
+
+// Enqueue Work
+WorkRequest uploadWorkRequest = new OneTimeWorkRequest.Builder(UploadWorker.class).build();
+WorkManager.getInstance(context).enqueue(uploadWorkRequest);
+```
+
+**Code Example in Kotlin:**  
+```kotlin
+class UploadWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+    override fun doWork(): Result {
+        uploadData()
+        return Result.success()
+    }
+
+    private fun uploadData() {
+        Log.d("WorkManager", "Data uploaded successfully")
+    }
+}
+
+// Enqueue Work
+val uploadWorkRequest = OneTimeWorkRequestBuilder<UploadWorker>().build()
+WorkManager.getInstance(context).enqueue(uploadWorkRequest)
+```
+
+**Real-Life Scenario:**  
+- A news app periodically fetches new articles in the background using WorkManager.
+
+---
+
+#### **2. Creating and Managing Alarms (One-time and Repeating Alarms)**
+
+**AlarmManager** is used for scheduling tasks that need to execute at a specific time.
+
+- **Types of Alarms:**
+  1. **One-Time Alarm:** Executes once at a specific time.  
+  2. **Repeating Alarm:** Executes repeatedly at fixed intervals.
+
+**Steps to Create Alarms:**
+1. Use `AlarmManager` to set the alarm.  
+2. Define a `PendingIntent` to specify the task.  
+3. Handle alarm execution in a `BroadcastReceiver`.
+
+**Code Example for One-Time Alarm in Java:**  
+```java
+AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+Intent intent = new Intent(this, AlarmReceiver.class);
+PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+long triggerTime = System.currentTimeMillis() + 60000; // Trigger after 1 minute
+alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+```
+
+**Code Example for Repeating Alarm in Kotlin:**  
+```kotlin
+val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+val intent = Intent(this, AlarmReceiver::class.java)
+val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+
+val interval = AlarmManager.INTERVAL_FIFTEEN_MINUTES
+alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent)
+```
+
+**Real-Life Scenario:**  
+- A fitness app reminds users to drink water every 2 hours using a repeating alarm.
+
+---
+
+#### **3. Implementing User Notifications with Notification Manager**
+
+**NotificationManager** is used to send notifications to the user.
+
+- **Key Components:**
+  1. **Notification Channel:** Required for Android 8.0 and above to group notifications.
+  2. **Notification Builder:** Used to define the notification's content and actions.
+
+**Steps to Create a Notification:**
+1. Create a Notification Channel (Android 8.0+).  
+2. Build the notification using `NotificationCompat.Builder`.  
+3. Display the notification using `NotificationManager`.
+
+**Code Example in Java:**  
+```java
+NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    NotificationChannel channel = new NotificationChannel("channel_id", "Channel Name", NotificationManager.IMPORTANCE_DEFAULT);
+    notificationManager.createNotificationChannel(channel);
+}
+
+Notification notification = new NotificationCompat.Builder(this, "channel_id")
+        .setContentTitle("Reminder")
+        .setContentText("It's time to check your app!")
+        .setSmallIcon(R.drawable.ic_notification)
+        .build();
+
+notificationManager.notify(1, notification);
+```
+
+**Code Example in Kotlin:**  
+```kotlin
+val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    val channel = NotificationChannel("channel_id", "Channel Name", NotificationManager.IMPORTANCE_DEFAULT)
+    notificationManager.createNotificationChannel(channel)
+}
+
+val notification = NotificationCompat.Builder(this, "channel_id")
+    .setContentTitle("Reminder")
+    .setContentText("It's time to check your app!")
+    .setSmallIcon(R.drawable.ic_notification)
+    .build()
+
+notificationManager.notify(1, notification)
+```
+
+**Real-Life Scenario:**  
+- A task management app notifies the user about upcoming deadlines.
+
+---
+
+#### **Key Takeaways:**
+- **WorkManager** is reliable for managing background tasks like data syncing.  
+- **AlarmManager** is used for scheduling time-based tasks, such as reminders.  
+- **NotificationManager** enables effective user communication through notifications.  
+
+---
+
+### **Lecture 41: App Packaging, Signing, and Deployment**
+
+---
+
+#### **1. Understanding Android App Bundle (AAB) vs. APK Format**
+
+**Android App Bundle (AAB):**
+- **AAB** is the preferred format for distributing Android apps on the Google Play Store.
+- It allows Google Play to generate and serve optimized APKs (split APKs) for different device configurations (screen size, architecture, etc.).
+- **Benefits:**
+  1. Smaller app size for users: Only the necessary resources are downloaded based on the device's configuration.
+  2. Supports dynamic delivery: Allows features to be downloaded on-demand.
+  3. Reduces the app's initial size and installation time.
+  4. Easier management for app developers by offloading APK generation to Google Play.
+
+**APK (Android Package):**
+- **APK** is a packaging format that contains the app code, resources, and assets.
+- It is a standalone package that is used to install an app on a device directly (without the need for the Play Store).
+- **Disadvantages of APK:**
+  1. Larger size due to including resources for multiple device configurations.
+  2. APKs are not optimized for different device types and configurations.
+
+**Key Differences:**
+- **AAB** is for Play Store distribution only, whereas **APK** can be used for both Play Store and manual installations.
+- **AAB** generates multiple APKs for different configurations, leading to smaller app sizes, while **APK** is a single package for all devices.
+
+---
+
+#### **2. Generating Signing Keys and Configuring Build Variants**
+
+To publish an app on the Play Store, the app must be signed with a **keystore**. This is necessary to ensure the integrity and authenticity of the app.
+
+**Signing the App:**
+1. **Keystore**: A file that contains the private keys used for signing the app.
+2. **Key Alias**: A name for the key within the keystore.
+3. **Key Password**: A password used to protect the key.
+
+**Steps to generate signing keys:**
+1. **Create Keystore** using **keytool** (from the JDK):
+   ```bash
+   keytool -genkey -v -keystore my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-key-alias
+   ```
+   This generates the keystore file (`my-release-key.jks`).
+
+2. **Configure Gradle** to sign the APK/AAB during the build:
+   - In `gradle.properties`, define the signing configurations:
+   ```properties
+   KEYSTORE_PASSWORD=your_keystore_password
+   KEY_ALIAS=your_key_alias
+   KEY_PASSWORD=your_key_password
+   ```
+   - In `build.gradle` (Module: app), add signing configurations:
+   ```groovy
+   android {
+       signingConfigs {
+           release {
+               storeFile file("path/to/your/keystore/my-release-key.jks")
+               storePassword project.KEYSTORE_PASSWORD
+               keyAlias project.KEY_ALIAS
+               keyPassword project.KEY_PASSWORD
+           }
+       }
+       buildTypes {
+           release {
+               signingConfig signingConfigs.release
+               minifyEnabled true
+               shrinkResources true
+               proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+           }
+       }
+   }
+   ```
+
+3. **Signing the APK/AAB:**
+   - When you build the app in release mode, it will be signed with the specified keystore:
+   ```bash
+   ./gradlew assembleRelease
+   ```
+
+---
+
+#### **3. Publishing Process on Google Play Store (Guidelines and Steps)**
+
+The process of publishing an app on the Google Play Store involves several important steps:
+
+1. **Prepare for Release:**
+   - Clean up your app by removing unnecessary code and resources.
+   - Ensure your app meets Google Play's policies (e.g., content rating, privacy policies).
+   - Test your app on multiple devices and use **Google Play Console's Pre-launch Report** to check for potential issues.
+
+2. **Create a Developer Account:**
+   - Set up a **Google Play Developer account** ($25 USD one-time fee).
+
+3. **Build the Release Version:**
+   - Generate the signed APK or AAB file.
+   - Ensure that the app is signed with the correct keystore (as explained in the previous section).
+   - Verify that the app is working as expected in the release version.
+
+4. **Upload the App to Google Play Console:**
+   - In the **Google Play Console**, create a new application.
+   - Upload the signed APK/AAB and fill out the app's details (name, description, screenshots, etc.).
+   - Provide the app's content rating, privacy policy URL, and other required details.
+
+5. **Set Pricing and Distribution:**
+   - Specify whether the app will be free or paid.
+   - Select the countries where the app will be available.
+   - Set the app's category (e.g., game, utility, productivity).
+
+6. **Submit for Review:**
+   - Once everything is ready, click **Publish**. Google will review the app, and once approved, it will be available on the Play Store.
+   - Google usually takes a few hours to a couple of days to review and approve the app.
+
+7. **Maintain and Update the App:**
+   - After the app is published, monitor user feedback and crash reports through Google Play Console.
+   - Release updates by uploading new versions (AAB/APK) and ensuring proper versioning.
+
+---
+
+#### **Key Takeaways:**
+
+1. **App Bundle (AAB)** is the preferred format for Google Play, offering smaller download sizes and optimized APKs for different devices.
+2. **APK** is still useful for sideloading or distributing apps outside of Google Play.
+3. **Signing Keys** are critical for securing your app. Use a keystore to sign your APK/AAB.
+4. **Google Play Console** is the platform to manage, upload, and publish your Android app. Be mindful of the guidelines and review processes to ensure a smooth app launch.
+
+---
+
+### **Lecture 42: Debugging and Testing**
+
+---
+
+#### **1. Introduction to Debugging and Testing in Android**
+
+**Debugging:**
+- **Debugging** is the process of identifying and fixing issues (bugs) in an application to ensure it functions correctly.
+- In Android, debugging helps developers understand the app's flow, identify crashes, and locate bugs.
+- Android Studio offers multiple debugging tools to inspect and control your app's execution.
+
+**Testing:**
+- **Testing** ensures that your app behaves as expected, meets requirements, and is free from critical bugs.
+- Android supports various types of tests, including **unit tests** (testing logic) and **UI tests** (testing user interface interactions).
+
+---
+
+#### **2. Using Logcat and Android Studio Debugger**
+
+**Logcat:**
+- **Logcat** is the logging system in Android that outputs system messages, logs, and stack traces to help developers debug their applications.
+- Logcat provides runtime details about the app's operations and helps track errors, warnings, and general information.
+
+**Common Log Levels:**
+- **VERBOSE**: Detailed logs, typically used for troubleshooting.
+- **DEBUG**: Logs used to track debugging information.
+- **INFO**: Logs providing high-level information.
+- **WARN**: Logs indicating a potential issue.
+- **ERROR**: Logs reporting errors or problems.
+- **ASSERT**: Logs indicating that a condition was assumed but failed.
+
+**Using Logcat:**
+- To output a log message:
+  ```java
+  Log.d("TAG", "Debug message here");
+  Log.e("TAG", "Error message here");
+  ```
+  Replace `"TAG"` with an appropriate label for your log.
+- Logcat can be accessed via the **Logcat window** in Android Studio, where you can filter logs by priority level, app process, or tags.
+
+**Android Studio Debugger:**
+- The **Android Studio Debugger** is a powerful tool that allows you to pause the execution of your app, inspect variables, and step through code.
+- It helps you **set breakpoints**, track the flow of execution, and monitor variables.
+
+**Steps to Use the Debugger:**
+1. Set a breakpoint in the code by clicking on the left margin next to the line number.
+2. Click **Debug** in Android Studio.
+3. The app will pause at the breakpoint, and you can inspect variables in the **Variables** window.
+4. You can **step over**, **step into**, or **step out** of functions to trace the app's execution.
+
+---
+
+#### **3. Unit Testing with JUnit and Android Testing Framework**
+
+**Unit Testing:**
+- **Unit testing** is used to test individual units of code (usually methods) in isolation.
+- It ensures that the logic within a function behaves as expected.
+
+**JUnit (Java):**
+- JUnit is a widely-used testing framework for writing unit tests in Java.
+- Android Studio integrates JUnit for testing Java-based logic.
+
+**Basic JUnit Test Example:**
+```java
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ExampleUnitTest {
+    @Test
+    public void addition_isCorrect() {
+        assertEquals(4, 2 + 2);
+    }
+}
+```
+- The **@Test** annotation indicates that the method is a test case.
+- The `assertEquals()` method checks if the expected and actual results match.
+
+**Android Testing Framework:**
+- Android provides a specialized testing framework for testing Android components (e.g., `Activity`, `View`, etc.).
+- It allows you to write **instrumentation tests** to interact with Android-specific components.
+  
+**Example of an Instrumentation Test:**
+```java
+@RunWith(AndroidJUnit4.class)
+public class MainActivityTest {
+
+    @Test
+    public void testTextView() {
+        onView(withId(R.id.myTextView))
+                .check(matches(withText("Hello World")));
+    }
+}
+```
+- `onView(withId(R.id.myTextView))`: Finds the view by its ID.
+- `check(matches(withText("Hello World")))`: Verifies the text content.
+
+---
+
+#### **4. UI Testing with Espresso and UI Automator**
+
+**Espresso:**
+- **Espresso** is a testing framework for writing UI tests in Android.
+- It allows you to simulate user interactions with views (e.g., clicks, text entry) and verify that the UI responds correctly.
+
+**Espresso Test Example:**
+```java
+@Test
+public void testButtonClick() {
+    onView(withId(R.id.myButton)).perform(click());
+    onView(withId(R.id.myTextView)).check(matches(withText("Button clicked")));
+}
+```
+- **onView()**: Finds a view in the layout.
+- **perform(click())**: Simulates a click action.
+- **check(matches())**: Verifies the view's state.
+
+**UI Automator:**
+- **UI Automator** is used for automating UI interactions across multiple apps.
+- It allows testing interactions beyond your app (e.g., switching apps, interacting with system settings).
+
+**UI Automator Test Example:**
+```java
+UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+device.pressHome();
+UiObject2 app = device.findObject(By.text("My App"));
+app.click();
+```
+- **UiDevice**: Provides methods to interact with the device.
+- **UiObject2**: Represents an individual UI element.
+
+---
+
+#### **5. Best Practices for Debugging and Testing**
+
+1. **Use Logcat and Breakpoints**:
+   - Always log critical events, especially errors and exceptions, to understand the flow of the app.
+   - Use breakpoints to inspect variables and app behavior at runtime.
+
+2. **Automate Testing**:
+   - Write automated unit and UI tests to ensure that your code works as expected and that future changes don’t break functionality.
+
+3. **Test on Multiple Devices**:
+   - Test the app on various devices to identify device-specific issues.
+
+4. **Handle Edge Cases**:
+   - Test edge cases and invalid inputs to ensure the app is robust.
+
+---
+
+#### **Key Takeaways:**
+
+1. **Logcat** is a vital debugging tool that helps track errors and application behavior in real time.
+2. **Android Studio Debugger** allows developers to step through their code, inspect variables, and identify issues.
+3. **JUnit** and **Espresso** are essential for unit and UI testing, respectively.
+4. **UI Automator** is used for automating tests that require interactions with multiple apps.
+5. Proper debugging and testing ensure that your app is stable, functional, and performs as expected on all devices.
+
+---
+
+## `Functions Declarations`
+
+Below is the declaration syntax for the Android functions that were mentioned earlier.
+
+### 1. **`ActivityCompat.requestPermissions()`**
+
+**Kotlin:**
+```kotlin
+fun requestPermissions(
+    activity: Activity, 
+    permissions: Array<String>, 
+    requestCode: Int
+)
+```
+
+**Java:**
+```java
+public static void requestPermissions(
+    Activity activity, 
+    String[] permissions, 
+    int requestCode
+)
+```
+
+- **Parameters:**
+  - `activity`: The activity from which the request is being made.
+  - `permissions`: An array of permissions that the app is requesting.
+  - `requestCode`: An integer request code used to identify this request when the result is returned.
+
+---
+
+### 2. **`ContextCompat.checkSelfPermission()`**
+
+**Kotlin:**
+```kotlin
+fun checkSelfPermission(
+    context: Context, 
+    permission: String
+): Int
+```
+
+**Java:**
+```java
+public static int checkSelfPermission(
+    Context context, 
+    String permission
+)
+```
+
+- **Parameters:**
+  - `context`: The context from which the check is being made (usually `this` or `getApplicationContext()`).
+  - `permission`: The permission being checked, e.g., `Manifest.permission.CAMERA`.
+
+- **Returns**: `PackageManager.PERMISSION_GRANTED` or `PackageManager.PERMISSION_DENIED`.
+
+---
+
+### 3. **`ActivityCompat.shouldShowRequestPermissionRationale()`**
+
+**Kotlin:**
+```kotlin
+fun shouldShowRequestPermissionRationale(
+    activity: Activity, 
+    permission: String
+): Boolean
+```
+
+**Java:**
+```java
+public static boolean shouldShowRequestPermissionRationale(
+    Activity activity, 
+    String permission
+)
+```
+
+- **Parameters:**
+  - `activity`: The activity requesting the permission.
+  - `permission`: The permission that you want to check if you need to explain why it's required.
+
+- **Returns**: `true` if you should show an explanation to the user, `false` otherwise.
+
+---
+
+### 4. **`FragmentTransaction.add()`**
+
+**Kotlin:**
+```kotlin
+fun add(
+    containerViewId: Int, 
+    fragment: Fragment, 
+    tag: String? = null
+): FragmentTransaction
+```
+
+**Java:**
+```java
+public FragmentTransaction add(
+    int containerViewId, 
+    Fragment fragment, 
+    String tag
+)
+```
+
+- **Parameters:**
+  - `containerViewId`: The ID of the container view where the fragment should be placed.
+  - `fragment`: The fragment to be added.
+  - `tag`: A tag for the fragment (optional).
+
+---
+
+### 5. **`FragmentTransaction.replace()`**
+
+**Kotlin:**
+```kotlin
+fun replace(
+    containerViewId: Int, 
+    fragment: Fragment, 
+    tag: String? = null
+): FragmentTransaction
+```
+
+**Java:**
+```java
+public FragmentTransaction replace(
+    int containerViewId, 
+    Fragment fragment, 
+    String tag
+)
+```
+
+- **Parameters:**
+  - `containerViewId`: The ID of the container view where the fragment should be replaced.
+  - `fragment`: The fragment that will replace the existing fragment.
+  - `tag`: A tag for the fragment (optional).
+
+---
+
+### 6. **`FragmentTransaction.remove()`**
+
+**Kotlin:**
+```kotlin
+fun remove(fragment: Fragment): FragmentTransaction
+```
+
+**Java:**
+```java
+public FragmentTransaction remove(Fragment fragment)
+```
+
+- **Parameters:**
+  - `fragment`: The fragment to be removed from the transaction.
+
+---
+
+### 7. **`FragmentTransaction.commit()`**
+
+**Kotlin:**
+```kotlin
+fun commit(): Int
+```
+
+**Java:**
+```java
+public int commit()
+```
+
+- **Returns**: The transaction ID, which is useful for later managing the transaction.
+
+---
+
+### 8. **`FragmentTransaction.addToBackStack()`**
+
+**Kotlin:**
+```kotlin
+fun addToBackStack(name: String?): FragmentTransaction
+```
+
+**Java:**
+```java
+public FragmentTransaction addToBackStack(String name)
+```
+
+- **Parameters:**
+  - `name`: A name to identify the back stack entry (optional).
+
+- **Returns**: The `FragmentTransaction` instance, so you can chain further actions.
+
+---
+
+### 9. **`Toast.makeText()`**
+
+**Kotlin:**
+```kotlin
+fun makeText(context: Context, text: CharSequence, duration: Int): Toast
+```
+
+**Java:**
+```java
+public static Toast makeText(Context context, CharSequence text, int duration)
+```
+
+- **Parameters:**
+  - `context`: The context to use (e.g., `this`).
+  - `text`: The message to display.
+  - `duration`: How long the toast will be shown (either `Toast.LENGTH_SHORT` or `Toast.LENGTH_LONG`).
+
+- **Returns**: A `Toast` object that can be shown using `show()`.
+
+---
+
+### 10. **`Toast.show()`**
+
+**Kotlin:**
+```kotlin
+fun show()
+```
+
+**Java:**
+```java
+public void show()
+```
+
+- **Description**: Displays the `Toast` message on the screen.
+
+---
+
+### 11. **`ActivityCompat.shouldShowRequestPermissionRationale()`**
+
+**Kotlin:**
+```kotlin
+fun shouldShowRequestPermissionRationale(
+    activity: Activity, 
+    permission: String
+): Boolean
+```
+
+**Java:**
+```java
+public static boolean shouldShowRequestPermissionRationale(
+    Activity activity, 
+    String permission
+)
+```
+
+- **Parameters**:
+  - `activity`: The activity requesting the permission.
+  - `permission`: The permission to check.
+
+- **Returns**: `true` if you should explain the reason for the permission request to the user.
+
+---
+
+### 12. **`Handler.post()`**
+
+**Kotlin:**
+```kotlin
+fun post(runnable: Runnable): Boolean
+```
+
+**Java:**
+```java
+public boolean post(Runnable runnable)
+```
+
+- **Parameters:**
+  - `runnable`: The code to be executed.
+
+- **Returns**: `true` if the runnable was successfully scheduled for execution.
+
+---
+---
+
+# Unit 4
 
 
+### Lecture 27: Introduction to Asynchronous Programming
+
+#### 1. **Synchronous vs. Asynchronous Programming**
+
+**Synchronous Programming**:
+- In synchronous programming, tasks are executed one after the other. Each task must complete before the next one starts.
+- Example: In a simple program, if Task A takes 5 seconds to complete, Task B will have to wait until Task A finishes.
+
+**Asynchronous Programming**:
+- Asynchronous programming allows tasks to run independently without blocking the execution of other tasks.
+- In Android, operations like network calls, file I/O, or database operations are often asynchronous, allowing the UI thread to stay responsive.
+- Example: While Task A runs in the background, Task B can run simultaneously without waiting for Task A to finish.
+
+#### 2. **Benefits of Asynchronous Programming**
+
+- **Improved Performance**: Asynchronous programming helps prevent the UI from freezing during long-running tasks, such as network operations or heavy computations.
+- **Non-blocking**: It allows the app to perform multiple tasks concurrently without waiting for each to finish.
+- **Better User Experience**: By keeping the UI thread free, the app remains responsive even when executing intensive tasks in the background.
+
+#### 3. **Asynchronous Tasks**
+
+In Android, asynchronous tasks are commonly used for network operations, file I/O, and long-running background tasks. Examples of asynchronous tasks are:
+
+- **AsyncTask (Deprecated)**: A simple way to run background tasks, but it's now recommended to use other solutions like **Coroutines** or **WorkManager**.
+- **Handlers and Threads**: Handlers allow communication between threads, while threads are used for running background tasks.
+- **FutureTask**: A more advanced concept for scheduling and handling asynchronous tasks.
+
+#### Real-life Example:
+
+- **Network Requests**: When an app fetches data from a remote server, it uses asynchronous programming to prevent the UI from freezing while waiting for the server's response.
+
+#### Example (Java):
+
+```java
+// Example of asynchronous task using a Handler
+Handler handler = new Handler(Looper.getMainLooper());
+new Thread(new Runnable() {
+    @Override
+    public void run() {
+        // Simulate network call
+        try {
+            Thread.sleep(2000); // Simulating network operation
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    // Update UI after the task is complete
+                    Toast.makeText(context, "Task completed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}).start();
+```
+
+#### Example (Kotlin):
+
+```kotlin
+// Example of asynchronous task using a Handler
+val handler = Handler(Looper.getMainLooper())
+Thread(Runnable {
+    // Simulate network call
+    try {
+        Thread.sleep(2000) // Simulating network operation
+        handler.post {
+            // Update UI after the task is complete
+            Toast.makeText(context, "Task completed", Toast.LENGTH_SHORT).show()
+        }
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+    }
+}).start()
+```
+
+---
+
+### Lecture 28: Mastering Asynchronous Programming with Coroutines
+
+#### 1. **Coroutines Introduction**
+
+**Coroutines** in Kotlin provide a lightweight, efficient, and flexible way to handle asynchronous programming. They are designed to simplify asynchronous programming by replacing callback-based patterns (like `AsyncTask`) with more readable and maintainable code.
+
+- **Coroutines vs Threads**: Coroutines are not threads; they are built on top of threads, providing a more efficient way of handling concurrency by being lighter and less resource-consuming.
+- **Coroutine Scope**: A `CoroutineScope` defines the lifecycle of a coroutine and manages its execution. It is typically tied to an activity, fragment, or other components to ensure that the coroutine is canceled when the component is destroyed.
+
+**Key Concepts**:
+- **Suspend Functions**: Functions that can be paused and resumed later without blocking a thread.
+- **Dispatchers**: A dispatcher determines which thread or thread pool the coroutine will run on.
+
+#### 2. **Launching and Managing Coroutines**
+
+- **`launch`**: This is used to start a new coroutine.
+- **`async`**: Used to create a coroutine that returns a result. It returns a `Deferred` object, which can be used to await the result.
+  
+Coroutines are often launched within a `CoroutineScope`:
+- **GlobalScope**: A global coroutine scope that is not tied to any lifecycle.
+- **Activity/Fragment Scope**: Scoped coroutines tied to the lifecycle of an Android component, typically using `lifecycleScope` (for activities or fragments) or `viewModelScope` (for ViewModels).
+
+#### 3. **Error Handling and Cancellation**
+
+- **Error Handling**: In coroutines, exceptions are typically handled by `try-catch` blocks, but there are specific ways to handle errors in coroutines:
+  - `try-catch`: To handle exceptions during coroutine execution.
+  - **`SupervisorJob`**: A special job that allows child coroutines to fail without affecting others.
+
+- **Cancellation**: Coroutines can be canceled using the `cancel()` function. This will stop the coroutine gracefully.
+
+#### 4. **Suspending Coroutines and Dispatchers**
+
+- **Suspend Functions**: These are functions marked with the `suspend` keyword. They can suspend the coroutine without blocking the thread and can be resumed later. They are the key to suspending coroutines.
+  - **Example**: A network request can be suspended, allowing the main thread to do other work while waiting for a response.
+
+- **Dispatchers**: Used to specify the thread or thread pool on which a coroutine will run.
+  - **`Dispatchers.Main`**: Runs on the main UI thread.
+  - **`Dispatchers.IO`**: Runs on a background thread optimized for I/O operations.
+  - **`Dispatchers.Default`**: Runs on a background thread optimized for CPU-intensive tasks.
+
+#### Real-life Example:
+
+- **Fetching Data from an API**: If an app needs to fetch data from a server, this is typically done in a background coroutine using `Dispatchers.IO` to avoid blocking the main UI thread. After fetching, the UI is updated on the main thread.
+
+#### Example (Java):
+
+```java
+// Using Kotlin Coroutines in Java (via Kotlin extensions)
+
+CoroutineScope(Dispatchers.Main).launch {
+    try {
+        String result = withContext(Dispatchers.IO) {
+            // Simulate network request
+            return@withContext fetchDataFromServer();
+        }
+        // Update UI with the result
+        textView.setText(result);
+    } catch (Exception e) {
+        // Handle error
+        e.printStackTrace();
+    }
+}
+```
+
+#### Example (Kotlin):
+
+```kotlin
+import kotlinx.coroutines.*
+
+fun fetchDataFromServer(): String {
+    // Simulate a network call
+    Thread.sleep(1000)
+    return "Data from server"
+}
+
+fun fetchData() {
+    // Start a coroutine on the main thread
+    CoroutineScope(Dispatchers.Main).launch {
+        try {
+            // Switch to a background thread for the network operation
+            val result = withContext(Dispatchers.IO) {
+                fetchDataFromServer()
+            }
+            // Update the UI with the result
+            textView.text = result
+        } catch (e: Exception) {
+            // Handle errors during the task
+            e.printStackTrace()
+        }
+    }
+}
+```
+
+#### Key Takeaways:
+- **Coroutines** offer a simpler and more efficient approach to handle asynchronous tasks in Kotlin.
+- **`launch`** is used to start coroutines, and **`async`** is used when you need a result.
+- **Suspend functions** allow you to pause a function without blocking a thread.
+- **Dispatchers** define the context in which a coroutine runs (e.g., on the main thread, in the background).
+- **Error handling** in coroutines uses `try-catch`, and coroutines can be **canceled** if needed.
+  
+### Use Cases for Coroutines:
+- Network requests (using Retrofit with coroutines).
+- Database operations (Room database).
+- Handling multiple tasks concurrently without blocking the UI.
+
+---
+
+### Lecture 29: Networking Fundamentals and API Handling
+
+#### 1. **Networking Fundamentals**
+
+Networking in Android allows communication between devices or applications, enabling features like fetching data from the internet, sending data, and interacting with APIs. The core concepts to understand are:
+
+- **HTTP Requests and Responses**: Communication between a client (Android app) and a server (API) is done using HTTP, which includes various request methods like GET, POST, PUT, DELETE, etc.
+  - **GET**: Used to retrieve data from the server.
+  - **POST**: Used to send data to the server (e.g., creating a new resource).
+  - **PUT**: Used to update an existing resource.
+  - **DELETE**: Used to delete a resource.
+
+- **Request Headers and Body**: These are parts of HTTP requests. Headers contain metadata, while the body holds the data sent to or received from the server (e.g., JSON, XML).
+
+- **Response Code**: The server returns a status code (e.g., `200 OK`, `404 Not Found`, `500 Internal Server Error`) that indicates the success or failure of a request.
+
+#### 2. **Making API Calls**
+
+Making network requests in Android is common, and there are several ways to perform API calls, such as using `HttpURLConnection`, `AsyncTask`, or libraries like **Retrofit** and **Volley**.
+
+- **Retrofit**: Retrofit is a type-safe HTTP client for Android, used to simplify making network requests.
+  - Retrofit works with **interfaces** to define API endpoints.
+  - It integrates easily with **Gson** or **Moshi** for parsing JSON into objects.
+  - Retrofit is asynchronous by default, using **Callbacks** for success or failure.
+
+- **Volley**: Volley is another HTTP library from Google that simplifies networking and improves performance with features like request caching, prioritization, and retries.
+
+##### Retrofit Example (Java):
+```java
+// Define an API interface
+public interface ApiService {
+    @GET("users")
+    Call<List<User>> getUsers();
+}
+
+// Create a Retrofit instance
+Retrofit retrofit = new Retrofit.Builder()
+    .baseUrl("https://api.example.com/")
+    .addConverterFactory(GsonConverterFactory.create())
+    .build();
+
+// Create the API service
+ApiService service = retrofit.create(ApiService.class);
+
+// Make the API call
+service.getUsers().enqueue(new Callback<List<User>>() {
+    @Override
+    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+        if (response.isSuccessful()) {
+            // Handle the successful response
+            List<User> users = response.body();
+        }
+    }
+
+    @Override
+    public void onFailure(Call<List<User>> call, Throwable t) {
+        // Handle failure
+    }
+});
+```
+
+##### Retrofit Example (Kotlin):
+```kotlin
+// Define an API interface
+interface ApiService {
+    @GET("users")
+    fun getUsers(): Call<List<User>>
+}
+
+// Create a Retrofit instance
+val retrofit = Retrofit.Builder()
+    .baseUrl("https://api.example.com/")
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
+
+// Create the API service
+val service = retrofit.create(ApiService::class.java)
+
+// Make the API call
+service.getUsers().enqueue(object : Callback<List<User>> {
+    override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+        if (response.isSuccessful) {
+            // Handle the successful response
+            val users = response.body()
+        }
+    }
+
+    override fun onFailure(call: Call<List<User>>, t: Throwable) {
+        // Handle failure
+    }
+})
+```
+
+#### 3. **Parsing JSON Data**
+
+When making an API call, the response from the server is typically in **JSON** format. To work with this data in Android, we need to **parse** it into objects. There are several libraries available for this, such as **Gson**, **Moshi**, and **Jackson**.
+
+- **Gson**: A popular library for converting Java/Kotlin objects to JSON and vice versa.
+- **Moshi**: A modern JSON library for Android, used with Retrofit for type-safe JSON parsing.
+
+##### Example of Parsing JSON using Gson (Java):
+```java
+// Define a User model class
+public class User {
+    private String name;
+    private int age;
+
+    // Getters and setters
+}
+
+// Parse JSON into a Java object using Gson
+Gson gson = new Gson();
+String jsonResponse = "{\"name\":\"John\", \"age\":30}";
+User user = gson.fromJson(jsonResponse, User.class);
+```
+
+##### Example of Parsing JSON using Gson (Kotlin):
+```kotlin
+// Define a User data class
+data class User(val name: String, val age: Int)
+
+// Parse JSON into a Kotlin object using Gson
+val gson = Gson()
+val jsonResponse = "{\"name\":\"John\", \"age\":30}"
+val user = gson.fromJson(jsonResponse, User::class.java)
+```
+
+##### Example of Parsing JSON using Moshi (Kotlin):
+```kotlin
+// Define a User data class
+data class User(val name: String, val age: Int)
+
+// Create Moshi instance and JSON adapter
+val moshi = Moshi.Builder().build()
+val jsonAdapter = moshi.adapter(User::class.java)
+
+val jsonResponse = "{\"name\":\"John\", \"age\":30}"
+val user = jsonAdapter.fromJson(jsonResponse)
+```
+
+#### Key Concepts:
+- **Asynchronous Networking**: Network requests should always be done asynchronously to avoid blocking the main thread.
+- **Gson and Moshi**: Libraries used to convert JSON responses into Java or Kotlin objects.
+- **Network Libraries (Retrofit/Volley)**: Simplify making API calls and parsing responses, reducing the boilerplate code.
+
+#### Use Cases:
+1. **Fetching Data from a REST API**: To show real-time data, such as weather updates or user information, fetched from a remote server.
+2. **Submitting Form Data**: For sending user inputs (e.g., registration or login details) to a server.
+3. **Syncing Data**: Periodically fetching data from a server to sync app content (e.g., chat messages).
+
+#### Common Issues and Considerations:
+- **Network Errors**: Always handle failures (e.g., no network connection, timeout).
+- **API Rate Limiting**: Be aware of the rate limits of APIs to avoid exceeding request limits.
+- **Threading**: Network requests should always be done in the background (e.g., using coroutines, `AsyncTask`, or `Thread`) to prevent blocking the UI thread.
+
+### Summary:
+- **Networking in Android** involves making HTTP requests and handling responses.
+- Use **Retrofit** for easy API calls and JSON parsing.
+- Handle asynchronous networking with callbacks or coroutines.
+- **Gson** and **Moshi** are used to parse JSON data.
+- Proper error handling and network management ensure a smooth user experience.
+
+---
+
+### Lecture 30: Advanced Data Handling with Files and Parsing
+
+#### 1. **File I/O Operations**
+
+File I/O (Input/Output) in Android allows reading from and writing to files, enabling apps to manage data locally. Android provides several ways to handle file operations using the `File` class and streams. 
+
+- **Types of File Storage in Android**:
+  - **Internal Storage**: Files stored within the app's private directory, which is only accessible to the app.
+  - **External Storage**: Files stored on the device's shared storage, accessible by other apps (if permissions are granted).
+
+##### File Operations in Internal Storage:
+- **Reading Files**: Use `FileInputStream` or `BufferedReader` for reading files.
+- **Writing Files**: Use `FileOutputStream` or `BufferedWriter` for writing data.
+
+##### Example of File I/O in Internal Storage (Java):
+```java
+// Writing to a file
+FileOutputStream fos = openFileOutput("example.txt", Context.MODE_PRIVATE);
+String data = "Hello, Android!";
+fos.write(data.getBytes());
+fos.close();
+
+// Reading from a file
+FileInputStream fis = openFileInput("example.txt");
+int character;
+StringBuilder stringBuilder = new StringBuilder();
+while ((character = fis.read()) != -1) {
+    stringBuilder.append((char) character);
+}
+fis.close();
+String fileContent = stringBuilder.toString();
+```
+
+##### Example of File I/O in Internal Storage (Kotlin):
+```kotlin
+// Writing to a file
+val fos = openFileOutput("example.txt", Context.MODE_PRIVATE)
+val data = "Hello, Android!"
+fos.write(data.toByteArray())
+fos.close()
+
+// Reading from a file
+val fis = openFileInput("example.txt")
+val stringBuilder = StringBuilder()
+var character: Int
+while (fis.read().also { character = it } != -1) {
+    stringBuilder.append(character.toChar())
+}
+fis.close()
+val fileContent = stringBuilder.toString()
+```
+
+##### File Operations in External Storage:
+To work with external storage, you must request permissions (`READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`) and check whether the external storage is available.
+
+Example: Writing a file to external storage (Java):
+```java
+if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+    File file = new File(Environment.getExternalStorageDirectory(), "example.txt");
+    FileOutputStream fos = new FileOutputStream(file);
+    fos.write("Hello, External Storage!".getBytes());
+    fos.close();
+}
+```
+
+#### 2. **Data Parsing**
+
+Data parsing involves transforming data from one format to another, such as from JSON to Java/Kotlin objects or from XML to an object. Parsing is essential when dealing with external data sources, especially APIs.
+
+##### Common Data Formats for Parsing:
+- **JSON (JavaScript Object Notation)**: Lightweight data-interchange format used extensively in APIs.
+- **XML (Extensible Markup Language)**: Often used in configuration files, older APIs, etc.
+- **HTML**: Can be parsed to extract relevant content, like scraping data from web pages.
+
+##### JSON Parsing:
+To parse JSON data, you can use libraries like **Gson**, **Moshi**, or **Jackson**.
+
+###### Gson Example (Java):
+```java
+// Define a User model class
+public class User {
+    private String name;
+    private int age;
+
+    // Getters and setters
+}
+
+// Parse JSON into a Java object using Gson
+Gson gson = new Gson();
+String jsonResponse = "{\"name\":\"John\", \"age\":30}";
+User user = gson.fromJson(jsonResponse, User.class);
+```
+
+###### Gson Example (Kotlin):
+```kotlin
+// Define a User data class
+data class User(val name: String, val age: Int)
+
+// Parse JSON into a Kotlin object using Gson
+val gson = Gson()
+val jsonResponse = "{\"name\":\"John\", \"age\":30}"
+val user = gson.fromJson(jsonResponse, User::class.java)
+```
+
+##### XML Parsing:
+Android provides the `XMLPullParser` class to parse XML data, which is memory-efficient and allows for both reading and writing XML.
+
+###### XML Parsing Example (Java):
+```java
+// XML structure: <user><name>John</name><age>30</age></user>
+XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+XmlPullParser parser = factory.newPullParser();
+InputStream inputStream = new FileInputStream("user.xml");
+parser.setInput(inputStream, null);
+
+int eventType = parser.getEventType();
+String name = null;
+int age = 0;
+
+while (eventType != XmlPullParser.END_DOCUMENT) {
+    if (eventType == XmlPullParser.START_TAG) {
+        if (parser.getName().equals("name")) {
+            name = parser.nextText();
+        } else if (parser.getName().equals("age")) {
+            age = Integer.parseInt(parser.nextText());
+        }
+    }
+    eventType = parser.next();
+}
+inputStream.close();
+```
+
+###### XML Parsing Example (Kotlin):
+```kotlin
+// XML structure: <user><name>John</name><age>30</age></user>
+val factory = XmlPullParserFactory.newInstance()
+val parser = factory.newPullParser()
+val inputStream = FileInputStream("user.xml")
+parser.setInput(inputStream, null)
+
+var eventType = parser.eventType
+var name: String? = null
+var age = 0
+
+while (eventType != XmlPullParser.END_DOCUMENT) {
+    if (eventType == XmlPullParser.START_TAG) {
+        if (parser.name == "name") {
+            name = parser.nextText()
+        } else if (parser.name == "age") {
+            age = parser.nextText().toInt()
+        }
+    }
+    eventType = parser.next()
+}
+inputStream.close()
+```
+
+#### 3. **Use Cases of File Handling and Data Parsing**
+- **Storing User Preferences**: Save user settings (e.g., theme preferences) in a file.
+- **Caching Data**: Download and cache data to avoid repeated network requests (e.g., image caching).
+- **Offline Functionality**: Store data locally to use when the device is offline (e.g., news articles).
+- **Reading Data from External Sources**: Fetch and display data from external sources (e.g., user profiles, articles) in a structured way.
+
+#### Key Considerations:
+- **Permissions**: Ensure the correct permissions are requested for file access, especially for external storage.
+- **File Size Management**: Large files may require optimized methods for reading and writing (e.g., buffered streams).
+- **Error Handling**: Handle potential errors like `FileNotFoundException`, `IOException`, and permission issues effectively.
+
+### Summary:
+- **File I/O** in Android allows reading and writing to both internal and external storage, using classes like `File`, `FileInputStream`, and `FileOutputStream`.
+- **JSON Parsing**: Gson and Moshi are common libraries to parse JSON data into Java/Kotlin objects.
+- **XML Parsing**: The `XMLPullParser` class is used for parsing XML data.
+- **Use Cases**: File I/O and data parsing are essential for managing app data locally, interacting with APIs, and enabling offline functionality.
+
+---
+
+
+### Lecture 31: Background Services and Broadcast Receivers
+
+#### 1. **Creating and Managing Services**
+A **Service** is an application component that can perform long-running operations in the background without a user interface. Services are used for tasks like downloading files, playing music, or handling network transactions.
+
+##### Types of Services:
+- **Started Service**: A service that runs in the background once it is started, and it continues running until it stops itself or is explicitly stopped by the app.
+- **Bound Service**: A service that allows other components (e.g., activities) to bind to it and interact with it. A bound service runs only while it has clients bound to it.
+
+##### Service Lifecycle Methods:
+- **`onCreate()`**: Called when the service is first created. This is where the service is initialized.
+- **`onStartCommand()`**: Called each time the service is started using `startService()`. This method provides the service with the requested operation (e.g., download data, play music).
+- **`onBind()`**: Called when another component binds to the service using `bindService()`. It returns an interface that allows interaction with the service.
+- **`onDestroy()`**: Called when the service is being destroyed, either because it stopped itself or was stopped by another component.
+
+##### Example of a Started Service (Java):
+```java
+public class MyService extends Service {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("Service", "Service Created");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // Perform background task here
+        Log.d("Service", "Service Started");
+        return START_STICKY; // Ensures the service restarts if killed by the system
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("Service", "Service Destroyed");
+    }
+}
+```
+
+##### Example of a Bound Service (Java):
+```java
+public class MyService extends Service {
+    private final IBinder binder = new LocalBinder();
+
+    public class LocalBinder extends Binder {
+        MyService getService() {
+            return MyService.this;
+        }
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+    
+    public void performTask() {
+        Log.d("Service", "Performing background task");
+    }
+}
+```
+
+##### Example of Binding to the Service (Java):
+```java
+MyService myService;
+boolean isBound = false;
+
+ServiceConnection serviceConnection = new ServiceConnection() {
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        MyService.LocalBinder binder = (MyService.LocalBinder) service;
+        myService = binder.getService();
+        isBound = true;
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        isBound = false;
+    }
+};
+
+Intent intent = new Intent(this, MyService.class);
+bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+```
+
+#### 2. **Broadcast Receivers**
+A **BroadcastReceiver** is a component that listens for broadcast messages from other applications or from the system itself. These messages (called **broadcasts**) can notify your app of system-wide events like Wi-Fi state changes, battery status, or app updates.
+
+##### Types of Broadcast Receivers:
+- **Normal Broadcasts**: These broadcasts are delivered to all registered receivers asynchronously. They are sent through the `sendBroadcast()` method.
+- **Ordered Broadcasts**: These are delivered to receivers one by one, allowing each receiver to either pass it along to the next receiver or consume it (abort the broadcast).
+- **Sticky Broadcasts**: These broadcasts are sent to any receiver that registers for them, even after they have been sent. They contain data that can be retrieved by a receiver at any time.
+
+##### Example of a BroadcastReceiver (Java):
+```java
+public class MyBroadcastReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (Intent.ACTION_BATTERY_LOW.equals(action)) {
+            Log.d("Receiver", "Battery is low");
+        }
+    }
+}
+```
+
+##### Registering a BroadcastReceiver (Java):
+- **Dynamically** (in your activity):
+```java
+MyBroadcastReceiver myReceiver = new MyBroadcastReceiver();
+IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_LOW);
+registerReceiver(myReceiver, filter);
+```
+
+- **Statically** (in the AndroidManifest.xml):
+```xml
+<receiver android:name=".MyBroadcastReceiver">
+    <intent-filter>
+        <action android:name="android.intent.action.BATTERY_LOW" />
+    </intent-filter>
+</receiver>
+```
+
+##### Example of Sending a Broadcast (Java):
+```java
+Intent intent = new Intent(Intent.ACTION_BATTERY_LOW);
+sendBroadcast(intent);
+```
+
+#### 3. **Services and Binding**
+- **Bound Service** allows other components (like an Activity) to interact with the service, using methods exposed by the service.
+- **Started Service** operates independently of any component and runs until stopped explicitly, which makes it ideal for tasks like background data processing or downloading content.
+
+##### Example of Using a Service for Background Task (Java):
+```java
+// Start a service to handle background download
+Intent intent = new Intent(this, DownloadService.class);
+intent.putExtra("url", "http://example.com/file.zip");
+startService(intent);
+```
+
+#### Use Cases of Services and Broadcast Receivers:
+- **Services**:
+  - **Download Manager**: Used for downloading files in the background without interfering with the UI.
+  - **Music Player**: A music service can continue running and playing music even when the user switches to another app.
+  - **Location Tracking**: Services can be used for continuous background tracking of the user’s location.
+  
+- **Broadcast Receivers**:
+  - **Battery Status**: Apps can listen for battery status changes and adjust functionality accordingly (e.g., reducing background activity).
+  - **Network Connectivity**: Apps can listen for network state changes and act accordingly (e.g., retry failed requests when the network is available).
+
+#### Key Considerations:
+- **Battery Usage**: Long-running services, especially if they're frequently updating or doing intensive operations, can drain battery life.
+- **Permissions**: Some broadcasts require specific permissions, such as listening for network changes or battery status.
+- **Threading**: Services run on the main thread by default, so you should offload long-running tasks to background threads or use async operations to avoid blocking the main UI thread.
+
+### Summary:
+- **Services** are used for long-running background tasks. There are two main types: started and bound services. Started services run until explicitly stopped, while bound services run while clients are bound to them.
+- **Broadcast Receivers** listen for broadcast messages from other apps or the system, allowing apps to react to system-wide events.
+- Both services and broadcast receivers are essential for managing background tasks and responding to system events in Android.
+
+---
+
+## `Function Declarations`
+
+Here are the syntax declarations for the functions used in the examples provided in Unit 4:
+
+### 1. **Service Lifecycle Methods** (Java)
+
+#### `onCreate()`
+```java
+@Override
+public void onCreate() {
+    // Called when the service is created.
+    super.onCreate();
+}
+```
+- **Purpose**: Used to perform one-time initialization for the service.
+- **Return Type**: `void`.
+
+#### `onStartCommand(Intent intent, int flags, int startId)`
+```java
+@Override
+public int onStartCommand(Intent intent, int flags, int startId) {
+    // Called when the service is started using startService().
+    // Return the type of start behavior (e.g., START_STICKY).
+    return START_STICKY;
+}
+```
+- **Purpose**: Starts the service and returns the behavior of the service if it's killed.
+- **Parameters**: 
+  - `Intent intent`: The intent that was passed to start the service.
+  - `int flags`: Additional options for the service.
+  - `int startId`: A unique identifier for this request to start the service.
+- **Return Type**: `int`.
+
+#### `onBind(Intent intent)`
+```java
+@Override
+public IBinder onBind(Intent intent) {
+    // Called when another component binds to the service.
+    return binder; // Return a binder object that communicates with the service.
+}
+```
+- **Purpose**: Used to return an `IBinder` interface for communication between the service and other components.
+- **Parameters**: 
+  - `Intent intent`: The intent used to bind the service.
+- **Return Type**: `IBinder`.
+
+#### `onDestroy()`
+```java
+@Override
+public void onDestroy() {
+    // Called when the service is destroyed.
+    super.onDestroy();
+}
+```
+- **Purpose**: Used to clean up resources before the service is destroyed.
+- **Return Type**: `void`.
+
+---
+
+### 2. **BroadcastReceiver Methods** (Java)
+
+#### `onReceive(Context context, Intent intent)`
+```java
+@Override
+public void onReceive(Context context, Intent intent) {
+    // Called when a broadcast message is received.
+}
+```
+- **Purpose**: Called when a broadcast message is received by the receiver.
+- **Parameters**: 
+  - `Context context`: The application context.
+  - `Intent intent`: The intent containing the broadcast data.
+- **Return Type**: `void`.
+
+---
+
+### 3. **Service Binding Methods** (Java)
+
+#### `bindService(Intent service, ServiceConnection conn, int flags)`
+```java
+bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+```
+- **Purpose**: Binds to a service, allowing components to communicate with it.
+- **Parameters**: 
+  - `Intent service`: The intent used to start the service.
+  - `ServiceConnection conn`: The connection to the service (which implements the `ServiceConnection` interface).
+  - `int flags`: Additional flags for binding (e.g., `Context.BIND_AUTO_CREATE` to auto-create the service if it's not running).
+- **Return Type**: `boolean` (true if binding is successful, false otherwise).
+
+#### `unbindService(ServiceConnection conn)`
+```java
+unbindService(serviceConnection);
+```
+- **Purpose**: Unbinds the component from the service.
+- **Parameters**: 
+  - `ServiceConnection conn`: The `ServiceConnection` that was previously used to bind to the service.
+- **Return Type**: `void`.
+
+---
+
+### 4. **Broadcast Sending Method** (Java)
+
+#### `sendBroadcast(Intent intent)`
+```java
+sendBroadcast(intent);
+```
+- **Purpose**: Sends a broadcast to all registered receivers.
+- **Parameters**: 
+  - `Intent intent`: The broadcast intent.
+- **Return Type**: `void`.
+
+---
+
+### Summary of the Function Declarations:
+- **`onCreate()`**: `public void onCreate()`
+- **`onStartCommand(Intent intent, int flags, int startId)`**: `public int onStartCommand(Intent intent, int flags, int startId)`
+- **`onBind(Intent intent)`**: `public IBinder onBind(Intent intent)`
+- **`onDestroy()`**: `public void onDestroy()`
+- **`onReceive(Context context, Intent intent)`**: `public void onReceive(Context context, Intent intent)`
+- **`bindService(Intent service, ServiceConnection conn, int flags)`**: `bindService(Intent service, ServiceConnection conn, int flags)`
+- **`unbindService(ServiceConnection conn)`**: `unbindService(ServiceConnection conn)`
+- **`sendBroadcast(Intent intent)`**: `sendBroadcast(Intent intent)`
+
+---
+---
+
+# Unit 3
+
+### **Lecture 19 - Introduction to Data Storage and Shared Preferences**
+
+#### **Importance of Data Storage in Android**
+Data storage is crucial for mobile apps as it allows for the persistence of data across app sessions. Android offers multiple ways to store data depending on the size, complexity, and persistence needs.
+
+1. **Types of Data Storage in Android**:
+   - **Shared Preferences**: Suitable for storing small amounts of primitive data (e.g., user settings).
+   - **Internal Storage**: Used for storing private data that can only be accessed by the app.
+   - **External Storage**: Can be used to store data that needs to be shared with other apps, such as media files.
+   - **SQLite Databases**: Used for structured data storage (relational).
+   - **Room Persistence Library**: An abstraction layer over SQLite that makes database operations easier.
+
+2. **Factors Influencing Data Storage Choice**:
+   - **Size**: Small data sets can go into Shared Preferences or internal storage, whereas large data sets should be handled by databases (SQLite or Room).
+   - **Complexity**: For simple key-value pairs, Shared Preferences work best. For more complex data, databases are preferred.
+   - **Persistence**: Shared Preferences and databases persist data across app restarts, while internal/external storage might not.
+
+---
+
+#### **Shared Preferences - Introduction**
+Shared Preferences are used to store key-value pairs for simple data storage needs, such as settings, user preferences, or small amounts of data that don’t require a complex structure.
+
+- **When to use Shared Preferences**:
+  - To store simple user preferences, settings, or configurations.
+  - To store flags or small tokens (e.g., logged-in state, app settings).
+
+- **How Shared Preferences Work**:
+  - It stores data as **key-value pairs**.
+  - Data can be accessed globally within the app.
+  - Persistent across app restarts, so it remains even when the app is closed.
+
+#### **Syntax and Examples**
+
+1. **Storing Data in Shared Preferences**:
+
+   - **Kotlin**:
+   ```kotlin
+   val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+   val editor = sharedPreferences.edit()
+   editor.putString("username", "JohnDoe")
+   editor.putInt("userAge", 25)
+   editor.apply()  // Don't forget to apply changes
+   ```
+
+   - **Java**:
+   ```java
+   SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+   SharedPreferences.Editor editor = sharedPreferences.edit();
+   editor.putString("username", "JohnDoe");
+   editor.putInt("userAge", 25);
+   editor.apply();  // Don't forget to apply changes
+   ```
+
+2. **Retrieving Data from Shared Preferences**:
+
+   - **Kotlin**:
+   ```kotlin
+   val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+   val username = sharedPreferences.getString("username", "DefaultName")
+   val userAge = sharedPreferences.getInt("userAge", 0)
+   println("Username: $username, Age: $userAge")
+   ```
+
+   - **Java**:
+   ```java
+   SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+   String username = sharedPreferences.getString("username", "DefaultName");
+   int userAge = sharedPreferences.getInt("userAge", 0);
+   Log.d("Data", "Username: " + username + ", Age: " + userAge);
+   ```
+
+3. **Removing Data from Shared Preferences**:
+
+   - **Kotlin**:
+   ```kotlin
+   val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+   val editor = sharedPreferences.edit()
+   editor.remove("username")  // Removes the key-value pair
+   editor.apply()
+   ```
+
+   - **Java**:
+   ```java
+   SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+   SharedPreferences.Editor editor = sharedPreferences.edit();
+   editor.remove("username");  // Removes the key-value pair
+   editor.apply();
+   ```
+
+4. **Clearing All Data in Shared Preferences**:
+
+   - **Kotlin**:
+   ```kotlin
+   val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+   val editor = sharedPreferences.edit()
+   editor.clear()  // Clears all key-value pairs
+   editor.apply()
+   ```
+
+   - **Java**:
+   ```java
+   SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+   SharedPreferences.Editor editor = sharedPreferences.edit();
+   editor.clear();  // Clears all key-value pairs
+   editor.apply();
+   ```
+
+---
+
+#### **Key Points**:
+- **Usage**: Shared Preferences are suitable for simple storage like settings and flags, not for complex data structures.
+- **Persistence**: Data in Shared Preferences is persistent across app sessions.
+- **Efficiency**: While it’s lightweight and fast, it’s not meant for storing large or complex data like multimedia or structured databases.
+
+---
+
+#### **Real-life Example**:
+**Scenario**: Suppose you are building a news app. The user can set their preferred news categories (Sports, Tech, etc.). You would store these preferences in Shared Preferences so that when the user restarts the app, their settings persist.
+
+- When the user selects "Sports", you store `"Sports"` in Shared Preferences.
+- When the app restarts, you retrieve the `"Sports"` preference and show relevant content.
+
+---
+
+### **Lecture 20 - Working with SQLite Databases and Room**
+
+#### **Introduction to SQLite Databases in Android**
+SQLite is a lightweight, embedded relational database used to store structured data in Android apps. It's particularly suitable for apps that need to store small to medium amounts of data locally. SQLite is built into Android, so it does not require any additional setup.
+
+1. **Why use SQLite**:
+   - **Structured Data Storage**: Suitable for storing tabular data, which can be queried and updated using SQL commands.
+   - **Lightweight**: It's a self-contained database engine that doesn't require a server to operate.
+   - **Persistence**: Data persists across app restarts, making it ideal for data storage when there is a need for local persistence.
+
+2. **SQLite Components**:
+   - **SQLiteOpenHelper**: A helper class that simplifies database creation and management.
+   - **SQLiteDatabase**: Used to perform CRUD operations (Create, Read, Update, Delete) on the database.
+
+---
+
+#### **Room Persistence Library**
+Room is an abstraction layer over SQLite that provides an easier and more efficient way to interact with the database. It reduces boilerplate code and provides compile-time verification of SQL queries.
+
+**Advantages of Room**:
+   - **Simplified Database Access**: Room eliminates the need for manually writing SQL queries by offering a higher-level API.
+   - **Compile-time Verification**: Room ensures that the SQL queries are correct at compile time, reducing runtime errors.
+   - **Support for LiveData and ViewModels**: Room integrates seamlessly with Jetpack components like LiveData and ViewModel.
+
+---
+
+#### **Setting up Room**
+
+1. **Dependencies**:
+   To use Room in your Android project, add the following dependencies in your `build.gradle` file:
+
+   - **Gradle dependencies**:
+   ```groovy
+   dependencies {
+       implementation "androidx.room:room-runtime:2.5.0"
+       annotationProcessor "androidx.room:room-compiler:2.5.0" // for Java
+       kapt "androidx.room:room-compiler:2.5.0" // for Kotlin
+   }
+   ```
+
+---
+
+#### **Creating a Room Database**
+
+1. **Define Entity (Data Model)**:
+   An entity represents a table in the database. It's a class annotated with `@Entity` and each field represents a column.
+
+   - **Kotlin**:
+   ```kotlin
+   @Entity(tableName = "user_table")
+   data class User(
+       @PrimaryKey(autoGenerate = true) val id: Int = 0,
+       @ColumnInfo(name = "user_name") val name: String,
+       @ColumnInfo(name = "user_age") val age: Int
+   )
+   ```
+
+   - **Java**:
+   ```java
+   @Entity(tableName = "user_table")
+   public class User {
+       @PrimaryKey(autoGenerate = true)
+       private int id;
+       
+       @ColumnInfo(name = "user_name")
+       private String name;
+       
+       @ColumnInfo(name = "user_age")
+       private int age;
+
+       // Getters and setters
+   }
+   ```
+
+2. **Create DAO (Data Access Object)**:
+   DAO provides methods to interact with the database. It uses annotations like `@Insert`, `@Update`, `@Delete`, `@Query`.
+
+   - **Kotlin**:
+   ```kotlin
+   @Dao
+   interface UserDao {
+       @Insert
+       suspend fun insert(user: User)
+       
+       @Update
+       suspend fun update(user: User)
+       
+       @Delete
+       suspend fun delete(user: User)
+       
+       @Query("SELECT * FROM user_table")
+       suspend fun getAllUsers(): List<User>
+   }
+   ```
+
+   - **Java**:
+   ```java
+   @Dao
+   public interface UserDao {
+       @Insert
+       void insert(User user);
+       
+       @Update
+       void update(User user);
+       
+       @Delete
+       void delete(User user);
+       
+       @Query("SELECT * FROM user_table")
+       List<User> getAllUsers();
+   }
+   ```
+
+3. **Create Room Database**:
+   RoomDatabase serves as the main database holder and is the access point to your app's persisted data.
+
+   - **Kotlin**:
+   ```kotlin
+   @Database(entities = [User::class], version = 1)
+   abstract class AppDatabase : RoomDatabase() {
+       abstract fun userDao(): UserDao
+   }
+   ```
+
+   - **Java**:
+   ```java
+   @Database(entities = {User.class}, version = 1)
+   public abstract class AppDatabase extends RoomDatabase {
+       public abstract UserDao userDao();
+   }
+   ```
+
+4. **Building the Database**:
+   The database is built by calling `Room.databaseBuilder()`.
+
+   - **Kotlin**:
+   ```kotlin
+   val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "user_database").build()
+   ```
+
+   - **Java**:
+   ```java
+   AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "user_database").build();
+   ```
+
+---
+
+#### **CRUD Operations with Room**
+
+1. **Inserting Data**:
+
+   - **Kotlin**:
+   ```kotlin
+   val user = User(name = "John", age = 30)
+   db.userDao().insert(user)
+   ```
+
+   - **Java**:
+   ```java
+   User user = new User("John", 30);
+   db.userDao().insert(user);
+   ```
+
+2. **Reading Data**:
+
+   - **Kotlin**:
+   ```kotlin
+   val users = db.userDao().getAllUsers()
+   ```
+
+   - **Java**:
+   ```java
+   List<User> users = db.userDao().getAllUsers();
+   ```
+
+3. **Updating Data**:
+
+   - **Kotlin**:
+   ```kotlin
+   val updatedUser = User(id = 1, name = "John", age = 31)
+   db.userDao().update(updatedUser)
+   ```
+
+   - **Java**:
+   ```java
+   User updatedUser = new User(1, "John", 31);
+   db.userDao().update(updatedUser);
+   ```
+
+4. **Deleting Data**:
+
+   - **Kotlin**:
+   ```kotlin
+   val userToDelete = User(id = 1, name = "John", age = 30)
+   db.userDao().delete(userToDelete)
+   ```
+
+   - **Java**:
+   ```java
+   User userToDelete = new User(1, "John", 30);
+   db.userDao().delete(userToDelete);
+   ```
+
+---
+
+#### **Key Points**:
+- **Room vs SQLite**: Room provides an abstraction layer over SQLite to simplify database operations. It removes the need for writing raw SQL queries and provides compile-time verification of queries.
+- **LiveData and ViewModel**: Room integrates seamlessly with LiveData and ViewModel, which makes it easier to handle data updates in the UI.
+- **Coroutines and Room**: Coroutines can be used to run database operations asynchronously in a non-blocking manner, improving app performance.
+
+---
+
+#### **Real-life Example**:
+**Scenario**: Suppose you're building a note-taking app. Each note is stored in a database with a title and content. You can use Room to create a `Note` entity, a `NoteDao` to handle CRUD operations, and a `NoteDatabase` to access your app's database.
+
+When the user creates a new note, the app inserts it into the Room database. When the app restarts, the `getAllNotes()` method fetches and displays all the saved notes.
+
+
+---
+
+### **Lecture 21 - Advanced Data Management and Retrieval**
+
+#### **Building and Using Room DAOs for CRUD Operations**
+A **Data Access Object (DAO)** in Room is an interface or abstract class that defines methods for interacting with the database. These methods are used to perform CRUD (Create, Read, Update, Delete) operations on the database.
+
+1. **What is a DAO?**
+   - A DAO provides an abstraction layer over SQLite, allowing you to interact with the database without writing SQL queries manually.
+   - It provides methods for inserting, updating, deleting, and querying data.
+
+2. **DAO Annotations**:
+   - `@Insert`: Used to insert one or more entities.
+   - `@Update`: Used to update existing entities in the database.
+   - `@Delete`: Used to delete an entity.
+   - `@Query`: Used to define custom SQL queries.
+
+   Example DAO:
+   ```kotlin
+   @Dao
+   interface UserDao {
+       @Insert
+       suspend fun insertUser(user: User)
+
+       @Update
+       suspend fun updateUser(user: User)
+
+       @Delete
+       suspend fun deleteUser(user: User)
+
+       @Query("SELECT * FROM user_table WHERE user_name = :name")
+       suspend fun getUserByName(name: String): List<User>
+   }
+   ```
+
+3. **Executing Queries**:
+   - You can use `@Query` to perform custom SQL queries. Room will verify the queries at compile-time to ensure they are correct.
+
+---
+
+#### **Content Providers**
+
+A **Content Provider** in Android allows you to share data between applications. They manage access to a central repository of data, ensuring data consistency, security, and proper access control. Content providers are particularly useful when you want to expose specific data to other apps or to interact with data from other apps.
+
+1. **Content Provider Overview**:
+   - Content providers use a uniform resource identifier (URI) to identify the data.
+   - They allow other applications to query, insert, update, and delete data.
+   - Commonly used for sharing data such as contacts, media, and files between applications.
+
+2. **Content URI and Content Resolver**:
+   - **Content URI**: A URI that uniquely identifies the data managed by the content provider.
+   - **Content Resolver**: Provides methods for accessing data from a content provider. It acts as a bridge between an app and a content provider.
+
+   Example of a content URI:
+   ```kotlin
+   val contentUri = Uri.parse("content://com.example.provider/users")
+   ```
+
+   Example of using a content resolver to query data:
+   ```kotlin
+   val cursor = contentResolver.query(contentUri, null, null, null, null)
+   ```
+
+3. **Types of Content Providers**:
+   - **Custom Content Provider**: Used to share data between different applications.
+   - **System Content Providers**: Android provides several built-in content providers (e.g., contacts, media, calendar) that allow apps to access shared system data.
+
+4. **Creating a Custom Content Provider**:
+   - Create a class that extends `ContentProvider` and override necessary methods like `onCreate()`, `query()`, `insert()`, `update()`, and `delete()`.
+   - Define the URI that uniquely identifies your data.
+
+   Example of a simple custom content provider:
+   ```kotlin
+   class UserContentProvider : ContentProvider() {
+       override fun onCreate(): Boolean {
+           // Initialize the database or other resources
+           return true
+       }
+
+       override fun query(
+           uri: Uri, 
+           projection: Array<String>?, 
+           selection: String?, 
+           selectionArgs: Array<String>?, 
+           sortOrder: String?
+       ): Cursor? {
+           // Return data based on URI and query parameters
+           return database.query("user_table", projection, selection, selectionArgs, null, null, sortOrder)
+       }
+
+       // Implement insert, update, and delete methods
+       override fun insert(uri: Uri, values: ContentValues?): Uri? {
+           val id = database.insert("user_table", null, values)
+           return ContentUris.withAppendedId(uri, id)
+       }
+
+       override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+           return database.update("user_table", values, selection, selectionArgs)
+       }
+
+       override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
+           return database.delete("user_table", selection, selectionArgs)
+       }
+
+       override fun getType(uri: Uri): String? {
+           return "vnd.android.cursor.dir/vnd.com.example.provider.users"
+       }
+   }
+   ```
+
+---
+
+#### **Loaders: Purpose and Usage**
+
+A **Loader** is used in Android to asynchronously load data in a way that doesn’t block the UI thread. It helps in managing background data loading and ensures that data is automatically updated when the dataset changes.
+
+1. **Why Use Loaders?**:
+   - Loaders simplify asynchronous data loading and prevent the UI thread from being blocked by long-running operations.
+   - They manage the loading of data in a lifecycle-aware way, so data loading is automatically restarted when needed (e.g., on configuration changes).
+
+2. **Types of Loaders**:
+   - **CursorLoader**: Loads data from a content provider into a `Cursor` (e.g., for querying a database).
+   - **AsyncTaskLoader**: A loader for performing background tasks (such as network calls or disk I/O) and delivering the result back to the UI thread.
+
+3. **Usage of Loaders**:
+   - **CursorLoader**: For loading data from a content provider into a `Cursor`.
+   - **AsyncTaskLoader**: For executing tasks in the background and returning the result to the activity/fragment.
+
+4. **Example: Using CursorLoader**:
+   ```kotlin
+   val loader = CursorLoader(
+       context,
+       contentUri,    // Content URI for the data
+       null,           // Projection (columns to retrieve)
+       null,           // Selection (filter criteria)
+       null,           // Selection arguments
+       null            // Sort order
+   )
+   loader.registerListener(0, LoaderManager.LoaderCallbacks { loader, data ->
+       // Handle the loaded data here
+   })
+   loader.startLoading()
+   ```
+
+5. **Loaders Replacement**:
+   - **Modern Android Development (MAD)** encourages replacing Loaders with **ViewModel** and **LiveData**. `LiveData` can be used to observe changes to data and automatically update the UI when the data changes.
+   - With **Room** and **LiveData**, you can achieve a similar result, providing a lifecycle-aware way to load and observe data.
+
+---
+
+### **Key Points:**
+1. **Room DAOs**:
+   - DAOs are interfaces that define database operations. They use annotations like `@Insert`, `@Update`, `@Delete`, and `@Query` for CRUD operations.
+   - They simplify database interactions by abstracting SQL code into Kotlin/Java functions.
+
+2. **Content Providers**:
+   - Content providers allow data sharing between apps.
+   - They use URIs to identify data and `ContentResolver` to interact with them.
+   - You can create custom content providers for your app.
+
+3. **Loaders**:
+   - Loaders manage data loading in a background thread to avoid UI thread blocking.
+   - They can be replaced by modern solutions like **LiveData** and **ViewModel** in Android's architecture.
+
+---
+
+#### **Real-life Example:**
+- **Content Provider**: An app that stores user notes might use a content provider to allow other apps (like a note-sharing app) to query and update those notes.
+- **Loader**: A loader might be used in an app to load a large list of contacts from a content provider without blocking the main thread. 
+
+---
+
+
+### Lecture 22 - Jetpack Components
+
+#### **1. Introduction to Jetpack**
+
+**Jetpack** is a set of libraries, tools, and guidance provided by Google to help developers write robust, maintainable, and efficient Android apps. Jetpack components allow developers to handle common tasks like managing UI, background work, navigation, and data storage without reinventing the wheel.
+
+#### **2. Jetpack Components Overview**
+Jetpack components can be categorized into four main groups:
+- **Architecture**: Libraries that help structure your app (e.g., **LiveData**, **ViewModel**, **Room**).
+- **UI**: Libraries for building UIs (e.g., **RecyclerView**, **ConstraintLayout**).
+- **Behavior**: Components that manage app behaviors (e.g., **WorkManager**, **Navigation**, **Paging**).
+- **Foundation**: Core system-level components (e.g., **AppCompat**, **Lifecycle**, **Room**).
+
+---
+
+#### **3. Creating and Managing Fragments**
+
+A **Fragment** represents a portion of UI in an Activity. Jetpack encourages using the `FragmentTransaction` to manage Fragment transactions (add, remove, replace, etc.).
+
+##### **Creating Fragments**
+Fragments are like modular sections of an Activity. You can create fragments to encapsulate parts of your UI, such as a login form or a list of items.
+
+```java
+// Java Code to Create a Fragment
+public class ExampleFragment extends Fragment {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_example, container, false);
+    }
+}
+```
+
+```kotlin
+// Kotlin Code to Create a Fragment
+class ExampleFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_example, container, false)
+    }
+}
+```
+
+##### **Adding, Removing, and Replacing Fragments**
+
+Use `FragmentTransaction` to add, remove, or replace fragments in your activity.
+
+```java
+// Java Code to Add, Replace, or Remove a Fragment
+FragmentManager fragmentManager = getSupportFragmentManager();
+FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+// Adding a Fragment
+fragmentTransaction.add(R.id.fragment_container, new ExampleFragment(), "ExampleFragment");
+fragmentTransaction.commit();
+
+// Replacing a Fragment
+fragmentTransaction.replace(R.id.fragment_container, new AnotherFragment(), "AnotherFragment");
+fragmentTransaction.commit();
+
+// Removing a Fragment
+fragmentTransaction.remove(exampleFragment);
+fragmentTransaction.commit();
+```
+
+```kotlin
+// Kotlin Code to Add, Replace, or Remove a Fragment
+val fragmentManager = supportFragmentManager
+val fragmentTransaction = fragmentManager.beginTransaction()
+
+// Adding a Fragment
+fragmentTransaction.add(R.id.fragment_container, ExampleFragment(), "ExampleFragment")
+fragmentTransaction.commit()
+
+// Replacing a Fragment
+fragmentTransaction.replace(R.id.fragment_container, AnotherFragment(), "AnotherFragment")
+fragmentTransaction.commit()
+
+// Removing a Fragment
+fragmentTransaction.remove(exampleFragment)
+fragmentTransaction.commit()
+```
+
+##### **Managing Fragment Lifecycle**
+
+Fragments have their own lifecycle methods, similar to an Activity but more flexible. You should handle fragment lifecycle appropriately, especially when managing UI updates.
+
+- **onCreateView()**: Used to inflate the layout for the fragment.
+- **onStart()**: Called when the fragment is visible to the user.
+- **onStop()**: Called when the fragment is no longer visible to the user.
+
+Example of lifecycle management:
+
+```java
+// Java Code for Fragment Lifecycle Management
+@Override
+public void onStart() {
+    super.onStart();
+    // Code to start resources like a network call
+}
+
+@Override
+public void onStop() {
+    super.onStop();
+    // Code to stop resources like a network call
+}
+```
+
+```kotlin
+// Kotlin Code for Fragment Lifecycle Management
+override fun onStart() {
+    super.onStart()
+    // Code to start resources like a network call
+}
+
+override fun onStop() {
+    super.onStop()
+    // Code to stop resources like a network call
+}
+```
+
+---
+
+#### **4. Jetpack Navigation for Seamless Navigation Flow**
+
+Jetpack Navigation helps manage the app’s navigation in a clean and flexible way. It allows you to define navigation in a graph and use it in your app's activities and fragments.
+
+##### **Steps to Use Jetpack Navigation**
+
+1. **Add Navigation Component Dependency**
+
+In your `build.gradle`:
+
+```gradle
+dependencies {
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.0'
+}
+```
+
+2. **Define a Navigation Graph**
+
+Create a new XML file in `res/navigation` folder and define all destinations (fragments) and actions (how to navigate between them).
+
+```xml
+<!-- navigation_graph.xml -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nav_graph"
+    android:label="fragment_nav_graph"
+    android:theme="@style/AppTheme">
+    
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.app.HomeFragment"
+        android:label="Home" />
+    
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.app.DetailFragment"
+        android:label="Detail" />
+</navigation>
+```
+
+3. **Set up Navigation in Activity**
+
+In the activity, set up the `NavController` to handle fragment transactions defined in the `navigation_graph.xml`.
+
+```java
+// Java Code for Navigation Setup
+NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+NavigationUI.setupActionBarWithNavController(this, navController);
+```
+
+```kotlin
+// Kotlin Code for Navigation Setup
+val navController = findNavController(R.id.nav_host_fragment)
+setupActionBarWithNavController(navController)
+```
+
+4. **Navigate Between Fragments**
+
+You can use `NavController` to navigate between fragments as defined in the navigation graph.
+
+```java
+// Java Code to Navigate Between Fragments
+navController.navigate(R.id.action_homeFragment_to_detailFragment);
+```
+
+```kotlin
+// Kotlin Code to Navigate Between Fragments
+navController.navigate(R.id.action_homeFragment_to_detailFragment)
+```
+
+---
+
+#### **Use Cases**
+
+- **Fragment Transactions**: Use fragments when you want to build flexible, reusable UI components. For example, in an e-commerce app, a product listing can be displayed in one fragment, while the product detail can be displayed in another fragment within the same activity.
+  
+- **Navigation**: Jetpack Navigation makes handling complex navigation scenarios simple. It can help navigate between multiple screens in a way that reduces boilerplate code and handles lifecycle management effectively.
+
+- **UI Modularity**: Fragments help you create modular UI sections that can be added, removed, or replaced dynamically, making your app more responsive and adaptable to different screen sizes and orientations.
+
+---
+
+### Summary
+
+Jetpack Components are powerful tools for Android app development. In this lecture, we focused on **Fragments** and how to use **Jetpack Navigation** to make your app's navigation more structured and manageable. By using fragments, you can create reusable UI components, and by using navigation, you can easily manage fragment transitions in a cleaner, more maintainable way.
+
+
+---
+
+### Lecture 23 - MVVM Architecture
+
+#### **1. Introduction to MVVM Architecture**
+
+The **MVVM (Model-View-ViewModel)** pattern is a software architectural pattern that separates an application into three main components:
+- **Model**: Represents the data or business logic of the application.
+- **View**: The UI components that display data and delegate user input to the ViewModel.
+- **ViewModel**: Acts as a bridge between the View and the Model. It processes the data from the Model and prepares it for display in the View.
+
+MVVM helps in separating the UI logic from the business logic, making the codebase cleaner, more maintainable, and easier to test.
+
+#### **2. Components of MVVM**
+- **Model**: Manages the data layer. It retrieves data from the database, network, or other sources and prepares it for presentation. It can also handle data transformations.
+  
+- **View**: Displays the UI and interacts with the user. The View is passive, meaning it doesn't contain business logic, but simply reflects the data provided by the ViewModel.
+
+- **ViewModel**: Serves as the intermediary between the Model and the View. It fetches data from the Model, formats it as needed, and exposes it to the View for display. It handles business logic and prepares data for the View in an observable form.
+
+#### **3. Advantages of MVVM Architecture**
+
+- **Separation of Concerns**: MVVM helps maintain a clear separation between UI and business logic. This makes the code easier to maintain and test.
+  
+- **Testability**: The ViewModel is designed to be independent of the Android framework, making it easier to write unit tests for the logic.
+  
+- **Modularity**: Since the UI logic is separated, the ViewModel can be reused with different Views.
+  
+- **Ease of Development**: MVVM helps in simplifying complex user interfaces, as it divides the work into manageable components.
+
+---
+
+#### **4. ViewModel as a Central Data Store for UI**
+
+In the MVVM architecture, the **ViewModel** serves as a central data store for the UI. It is responsible for maintaining and managing UI-related data in a lifecycle-conscious way, meaning it survives configuration changes like screen rotations.
+
+ViewModel helps to:
+- **Store UI-related data**: It stores data that needs to be displayed on the screen and is responsible for managing the lifecycle of that data.
+- **Avoid memory leaks**: By using ViewModel, UI-related data is retained across configuration changes, preventing memory leaks.
+- **Provide data to the View**: It exposes the data in a form that the View can observe (usually through **LiveData** or **StateFlow**).
+
+##### **Example of ViewModel Usage**
+
+**Java:**
+```java
+public class MyViewModel extends ViewModel {
+    private MutableLiveData<String> userData;
+
+    public MyViewModel() {
+        userData = new MutableLiveData<>();
+        // Load data from Model and update LiveData
+        userData.setValue("Hello, User!");
+    }
+
+    public LiveData<String> getUserData() {
+        return userData;
+    }
+}
+```
+
+**Kotlin:**
+```kotlin
+class MyViewModel : ViewModel() {
+    private val _userData = MutableLiveData<String>()
+    val userData: LiveData<String> get() = _userData
+
+    init {
+        // Load data from Model and update LiveData
+        _userData.value = "Hello, User!"
+    }
+}
+```
+
+In this example, the **ViewModel** exposes data using **LiveData**, which allows the View (usually an Activity or Fragment) to observe changes in data. When the data changes, the UI is updated automatically.
+
+---
+
+#### **5. Binding Data Between View and ViewModel**
+
+MVVM is often used with **Data Binding** to automatically bind UI components to the data in the ViewModel. With data binding, changes in the ViewModel automatically update the UI.
+
+**Java:**
+```java
+// In the Activity or Fragment
+ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+MyViewModel viewModel = new ViewModelProvider(this).get(MyViewModel.class);
+binding.setViewModel(viewModel);
+binding.setLifecycleOwner(this);
+```
+
+**Kotlin:**
+```kotlin
+// In the Activity or Fragment
+val binding = ActivityMainBinding.inflate(layoutInflater)
+val viewModel = ViewModelProvider(this).get(MyViewModel::class.java)
+binding.viewModel = viewModel
+binding.lifecycleOwner = this
+setContentView(binding.root)
+```
+
+In this example, the `setViewModel()` and `setLifecycleOwner()` methods bind the ViewModel to the View, allowing automatic updates of the UI based on changes in the data.
+
+---
+
+#### **6. ViewModel and LiveData**
+
+**LiveData** is a lifecycle-aware data holder that is commonly used in MVVM to hold and manage UI-related data. It allows the View (Activity/Fragment) to observe changes and update the UI when the data changes.
+
+**Java:**
+```java
+// ViewModel storing LiveData
+public class MyViewModel extends ViewModel {
+    private MutableLiveData<String> liveData;
+
+    public MyViewModel() {
+        liveData = new MutableLiveData<>();
+    }
+
+    public LiveData<String> getLiveData() {
+        return liveData;
+    }
+
+    public void updateData(String newData) {
+        liveData.setValue(newData);
+    }
+}
+```
+
+**Kotlin:**
+```kotlin
+// ViewModel storing LiveData
+class MyViewModel : ViewModel() {
+    private val _liveData = MutableLiveData<String>()
+    val liveData: LiveData<String> get() = _liveData
+
+    fun updateData(newData: String) {
+        _liveData.value = newData
+    }
+}
+```
+
+When the `updateData()` function is called, the UI automatically reflects the change, because the LiveData object is observable by the View.
+
+---
+
+#### **7. Example of Full MVVM Setup (Java)**
+
+```java
+// Model Class
+public class UserModel {
+    public String getUserName() {
+        return "John Doe";
+    }
+}
+
+// ViewModel Class
+public class UserViewModel extends ViewModel {
+    private MutableLiveData<String> userName = new MutableLiveData<>();
+
+    public UserViewModel(UserModel model) {
+        userName.setValue(model.getUserName());
+    }
+
+    public LiveData<String> getUserName() {
+        return userName;
+    }
+}
+
+// Activity Class
+public class MainActivity extends AppCompatActivity {
+    private UserViewModel viewModel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        UserModel model = new UserModel();
+        viewModel = new ViewModelProvider(this, new UserViewModelFactory(model))
+                .get(UserViewModel.class);
+
+        final TextView userNameTextView = findViewById(R.id.user_name);
+        viewModel.getUserName().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String userName) {
+                userNameTextView.setText(userName);
+            }
+        });
+    }
+}
+```
+
+---
+
+#### **8. Example of Full MVVM Setup (Kotlin)**
+
+```kotlin
+// Model Class
+class UserModel {
+    fun getUserName(): String {
+        return "John Doe"
+    }
+}
+
+// ViewModel Class
+class UserViewModel(private val model: UserModel) : ViewModel() {
+    private val _userName = MutableLiveData<String>()
+
+    init {
+        _userName.value = model.getUserName()
+    }
+
+    val userName: LiveData<String> get() = _userName
+}
+
+// Activity Class
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: UserViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val model = UserModel()
+        viewModel = ViewModelProvider(this, UserViewModelFactory(model))
+                .get(UserViewModel::class.java)
+
+        val userNameTextView: TextView = findViewById(R.id.user_name)
+        viewModel.userName.observe(this, Observer {
+            userNameTextView.text = it
+        })
+    }
+}
+```
+
+---
+
+#### **9. Conclusion**
+
+- **MVVM** architecture makes apps more modular, testable, and maintainable.
+- **ViewModel** serves as the bridge between the **View** and **Model**, keeping UI logic separate from business logic.
+- **LiveData** and **DataBinding** allow automatic updates to the UI when data changes, improving the app's efficiency and user experience.
+
+By adhering to MVVM principles, developers can create robust, scalable, and well-structured applications that are easier to maintain and test.
+
+
+---
+
+# Unit 2
+
+### Unit 2: Kotlin Fundamentals
+
+---
+
+### **Lecture 10 - Introduction to Kotlin**
+
+#### **1. Introduction to Kotlin**
+
+Kotlin is a modern, statically typed programming language that runs on the Java Virtual Machine (JVM) and can be used for Android development. It was introduced by JetBrains and is now officially supported by Google for Android development.
+
+**Benefits of Kotlin:**
+- **Concise**: Kotlin reduces boilerplate code compared to Java, making it more concise and readable.
+- **Interoperable with Java**: Kotlin is fully interoperable with Java, which means developers can use existing Java libraries and frameworks.
+- **Null Safety**: Kotlin provides built-in null safety, reducing the risk of NullPointerExceptions.
+- **Coroutines**: Kotlin supports coroutines, which simplifies asynchronous programming.
+- **Functional Programming**: Kotlin supports functional programming features like lambdas, higher-order functions, and immutability.
+
+#### **2. Basic Kotlin Syntax Elements**
+
+**Variables**:
+- `var` is used for mutable variables (can be reassigned).
+- `val` is used for immutable variables (cannot be reassigned after initialization).
+
+```kotlin
+val name: String = "John"  // Immutable
+var age: Int = 30          // Mutable
+```
+
+**Data Types**:
+- Common types include `Int`, `Double`, `Boolean`, `Char`, `String`.
+
+```kotlin
+val pi: Double = 3.14
+val isActive: Boolean = true
+```
+
+**Operators and Expressions**:
+- Arithmetic, logical, and comparison operators work similarly to other languages.
+
+```kotlin
+val sum = 5 + 3
+val isEqual = (5 == 3)   // Comparison operator
+```
+
+#### **3. Kotlin-Specific Idioms**
+
+- **Null-Safety**: Kotlin uses nullable and non-nullable types. A variable must explicitly be declared as nullable by appending `?` to its type.
+
+```kotlin
+var name: String? = "John"  // Nullable
+name = null  // This is allowed
+```
+
+- **String Templates**: Kotlin allows embedding expressions inside strings using `$` for variables and `${}` for expressions.
+
+```kotlin
+val name = "John"
+val greeting = "Hello, $name!"
+val message = "The result is ${5 + 3}"
+```
+
+#### **4. Coding Conventions**
+
+- Use **camelCase** for variables and function names.
+- Use **PascalCase** for class names.
+- Indentation: 4 spaces (no tabs).
+- Code should be written in a clear, readable way with adequate documentation.
+
+---
+
+### **Lecture 11 - Basic Types and Packages**
+
+#### **1. Primitive Data Types**
+
+Kotlin has several basic data types, including:
+- **Int**: Represents integer values.
+- **Double**: Represents floating-point numbers.
+- **Boolean**: Represents true/false values.
+- **Char**: Represents a single character.
+- **String**: Represents a sequence of characters.
+
+```kotlin
+val number: Int = 10
+val price: Double = 19.99
+val isActive: Boolean = true
+val grade: Char = 'A'
+val name: String = "Alice"
+```
+
+#### **2. Type Inference**
+
+Kotlin can automatically infer the type of a variable from its initializer, making it unnecessary to explicitly define the type.
+
+```kotlin
+val number = 10        // Inferred as Int
+val name = "Alice"     // Inferred as String
+```
+
+#### **3. Packages**
+
+Packages are used in Kotlin to organize code and avoid naming conflicts. You can create and use packages in Kotlin as follows:
+
+```kotlin
+package com.example.myapp
+
+class MyClass {
+    // class implementation
+}
+```
+
+To use this class in another file:
+```kotlin
+import com.example.myapp.MyClass
+
+val obj = MyClass()
+```
+
+---
+
+### **Lecture 12 - Control Flow, Functions, and Lambdas**
+
+#### **1. Control Flow Statements**
+
+- **if-else**: Kotlin's `if` can be used as an expression.
+
+```kotlin
+val max = if (a > b) a else b
+```
+
+- **for loop**: Iterates through collections, ranges, or arrays.
+
+```kotlin
+for (i in 1..5) {
+    println(i)
+}
+```
+
+- **while loop**: Repeats as long as the condition is true.
+
+```kotlin
+var x = 5
+while (x > 0) {
+    println(x)
+    x--
+}
+```
+
+- **when expression**: A powerful alternative to `switch` that allows multiple conditions.
+
+```kotlin
+when (x) {
+    1 -> println("One")
+    2 -> println("Two")
+    else -> println("Other")
+}
+```
+
+#### **2. Functions**
+
+Functions are declared using the `fun` keyword.
+
+```kotlin
+fun add(a: Int, b: Int): Int {
+    return a + b
+}
+
+val sum = add(5, 3)
+```
+
+You can also declare functions with default parameters and named arguments.
+
+```kotlin
+fun greet(name: String = "Guest") {
+    println("Hello, $name!")
+}
+greet()   // "Hello, Guest!"
+greet("Alice")  // "Hello, Alice!"
+```
+
+#### **3. Lambdas**
+
+Lambdas allow you to define anonymous functions and pass them as arguments.
+
+```kotlin
+val sum = { x: Int, y: Int -> x + y }
+println(sum(2, 3))   // Output: 5
+```
+
+Lambdas are commonly used for higher-order functions (functions that take other functions as parameters).
+
+```kotlin
+fun doOperation(a: Int, b: Int, operation: (Int, Int) -> Int): Int {
+    return operation(a, b)
+}
+
+val result = doOperation(5, 3) { x, y -> x + y }
+```
+
+---
+
+### **Lecture 13 - Classes and Objects**
+
+#### **1. Classes and Objects**
+
+A class is a blueprint for creating objects. Objects are instances of classes.
+
+```kotlin
+class Car(val make: String, val model: String, var year: Int)
+
+val myCar = Car("Toyota", "Corolla", 2020)
+```
+
+#### **2. Inheritance**
+
+Kotlin supports inheritance, where a subclass inherits properties and methods from a parent class.
+
+```kotlin
+open class Animal(val name: String) {
+    fun speak() {
+        println("Animal makes a sound")
+    }
+}
+
+class Dog(name: String) : Animal(name) {
+    fun bark() {
+        println("Woof!")
+    }
+}
+
+val dog = Dog("Buddy")
+dog.speak()  // "Animal makes a sound"
+dog.bark()   // "Woof!"
+```
+
+---
+
+### **Lecture 14 - Advanced Kotlin Features**
+
+#### **1. Properties and Fields**
+
+Kotlin allows the use of properties and fields. You can create custom getters and setters.
+
+```kotlin
+class Person(var name: String) {
+    var age: Int = 0
+        get() = field + 5  // Custom getter
+        set(value) { field = value }
+}
+```
+
+#### **2. Interfaces**
+
+You can define interfaces in Kotlin, which can be implemented by classes.
+
+```kotlin
+interface Driveable {
+    fun drive()
+}
+
+class Car : Driveable {
+    override fun drive() {
+        println("Car is driving")
+    }
+}
+```
+
+#### **3. Visibility Modifiers**
+
+Kotlin supports four visibility modifiers: `public`, `internal`, `protected`, and `private`.
+
+```kotlin
+class MyClass {
+    private var data: String = "Private"
+    internal var info: String = "Internal"
+}
+```
+
+#### **4. Extension Functions and Properties**
+
+Kotlin allows adding new functions to existing classes through **extension functions**.
+
+```kotlin
+fun String.printLength() {
+    println("Length: ${this.length}")
+}
+
+"Hello".printLength()  // Output: Length: 5
+```
+
+---
+
+### **Lecture 15 - Data Efficiency with Data Classes & Generics**
+
+#### **1. Data Classes**
+
+Data classes are used for classes that primarily hold data. Kotlin automatically generates common methods like `toString()`, `equals()`, and `hashCode()` for data classes.
+
+```kotlin
+data class User(val name: String, val age: Int)
+
+val user = User("Alice", 30)
+println(user)  // Output: User(name=Alice, age=30)
+```
+
+#### **2. Generics**
+
+Generics allow classes or functions to operate on different data types while maintaining type safety.
+
+```kotlin
+class Box<T>(val item: T)
+
+val intBox = Box(10)
+val stringBox = Box("Hello")
+```
+
+Generics can be applied to classes, interfaces, and functions.
+
+```kotlin
+fun <T> printItem(item: T) {
+    println(item)
+}
+
+printItem(5)      // Output: 5
+printItem("Hello") // Output: Hello
+```
+
+---
+---
+
+# Unit 1
+
+### **UNIT 1: Android Fundamentals**
+
+---
+
+### **Lecture 1 - Introduction to Android Development**
+
+#### **1. Overview of the Android Platform and its Architecture**
+- **Android** is an open-source, Linux-based operating system primarily for mobile devices.
+- It uses a **Java** or **Kotlin** programming language to create applications that run on the Android device.
+- **Android Architecture** consists of:
+  - **Linux Kernel**: The core layer providing hardware abstraction, security, and memory management.
+  - **Libraries and Runtime**: Java libraries and Android Runtime (ART) for running apps.
+  - **Application Framework**: Includes libraries for building apps, such as activity management, UI design, and content providers.
+  - **Applications**: End-user apps (e.g., Gmail, Maps).
+
+#### **2. Setting Up the Android Development Environment**
+- Install **Android Studio**, the official Integrated Development Environment (IDE) for Android development.
+- **JDK** (Java Development Kit) is required for Java-based Android development.
+- **Emulator** can be used to run and test Android apps, or a physical Android device can be used for testing.
+
+#### **3. Understanding Views and Resources in Android**
+- **Views** represent the UI components (e.g., buttons, text fields) in an app.
+- **Resources** (strings, images, layouts) are stored in the `res` folder of the project.
+  - Example: `res/layout/activity_main.xml` for UI layouts.
+  - Example: `res/values/strings.xml` for string resources.
+
+#### **4. Basics of Activities and Intents**
+- **Activity**: Represents a single screen in an app and handles UI interactions.
+- **Intent**: A message or action passed between activities or components. It can be explicit (targeting a specific activity) or implicit (allowing the system to choose an appropriate activity).
+  
+```kotlin
+val intent = Intent(this, SecondActivity::class.java)
+startActivity(intent)
+```
+
+---
+
+### **Lecture 2 - User Interface Design and Navigation**
+
+#### **1. Introduction to Material Design Principles**
+- Material Design provides guidelines for creating visually appealing and consistent UI/UX across Android apps.
+- It includes concepts like **motion**, **layouts**, **colors**, and **typography**.
+
+#### **2. Customizing Themes, Styles, and Attributes**
+- **Themes** and **styles** help customize the look of the app by defining the color scheme, fonts, and appearance of UI elements.
+  - Example: `res/values/styles.xml`
+  
+```xml
+<style name="CustomTheme" parent="Theme.AppCompat.Light">
+    <item name="android:colorPrimary">#FF5722</item>
+    <item name="android:textColorPrimary">#FFFFFF</item>
+</style>
+```
+
+#### **3. Exploring Input Controls and Implementing Menus and Widgets**
+- **Widgets**: Buttons, TextFields, etc., used for user interaction.
+- **Menus**: Options like overflow menus or context menus for extra actions.
+
+```kotlin
+val button = Button(this)
+button.text = "Click me"
+```
+
+#### **4. Managing Screen Navigation Using Intents and Fragments**
+- **Fragments** represent reusable UI components, allowing for flexible navigation within the same activity.
+- Use **intents** to navigate between activities or pass data.
+
+```kotlin
+val fragment = ExampleFragment()
+supportFragmentManager.beginTransaction()
+    .replace(R.id.fragment_container, fragment)
+    .commit()
+```
+
+---
+
+### **Lecture 3 - Advanced User Interaction**
+
+#### **1. Utilizing RecyclerView for Efficient List/Grid Layouts**
+- **RecyclerView** is a flexible and performance-optimized view for displaying large sets of data in a list/grid.
+- It uses **ViewHolder** and **Adapter** for managing views and data.
+
+```kotlin
+val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+recyclerView.layoutManager = LinearLayoutManager(this)
+val adapter = MyAdapter(data)
+recyclerView.adapter = adapter
+```
+
+#### **2. Working with ListView and Customizing Adapters**
+- **ListView** is an older widget for displaying lists, similar to RecyclerView but with fewer features.
+- You need to create a custom **Adapter** to display data in each list item.
+
+```kotlin
+val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
+listView.adapter = adapter
+```
+
+#### **3. Implementing Drawables for Custom Graphics and Animations**
+- **Drawables** allow custom graphics (e.g., shapes, images) to be drawn on the screen.
+- **Animations** in Android can be implemented using `ObjectAnimator`, `ViewPropertyAnimator`, or XML-based animations.
+
+```kotlin
+val drawable = resources.getDrawable(R.drawable.custom_drawable)
+imageView.setImageDrawable(drawable)
+```
+
+#### **4. Handling Notifications to Keep Users Informed**
+- **Notifications** are used to inform users about events in the app, even when the app is in the background.
+
+```kotlin
+val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+    .setContentTitle("New Message")
+    .setContentText("You have a new message!")
+    .setSmallIcon(R.drawable.ic_message)
+    .build()
+notificationManager.notify(1, notification)
+```
+
+---
+
+### **Lecture 4 - Advanced Views and Graphics**
+
+#### **1. Advanced Views and Graphics in Android**
+- Views can be customized or extended to create more interactive and complex UI elements.
+- Custom views are created by extending the `View` class and overriding the `onDraw()` method for custom drawing.
+
+```kotlin
+class CustomView(context: Context) : View(context) {
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        val paint = Paint()
+        paint.color = Color.RED
+        canvas.drawCircle(100f, 100f, 50f, paint)
+    }
+}
+```
+
+#### **2. Working with Canvas and Paint for Custom Drawing**
+- **Canvas**: Used for drawing shapes, images, and texts.
+- **Paint**: Defines how the drawing will appear (e.g., color, stroke width).
+
+```kotlin
+val canvas = Canvas()
+val paint = Paint()
+paint.color = Color.BLUE
+canvas.drawRect(0f, 0f, 200f, 200f, paint)
+```
+
+#### **3. Animation and Interactivity with Touch Events**
+- **Touch events**: Handled via `onTouchEvent()` method for detecting user interactions like taps, swipes, etc.
+- **Animations**: Used to enhance the user experience with smooth transitions.
+
+```kotlin
+val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+        // Handle tap event
+        return super.onSingleTapConfirmed(e)
+    }
+})
+```
+
+#### **4. Creating Custom Views and View Groups**
+- A **Custom ViewGroup** can be created by extending `ViewGroup` and overriding the `onLayout()` method.
+
+```kotlin
+class CustomViewGroup(context: Context) : ViewGroup(context) {
+    override fun onLayout(p0: Boolean, p1: Int, p2: Int, p3: Int, p4: Int) {
+        // Custom layout logic
+    }
+}
+```
+
+---
+
+### **Lecture 5 - Activity Lifecycle Management**
+
+#### **1. Understanding the Lifecycle of an Android Activity**
+- Android activities go through different states such as **onCreate()**, **onStart()**, **onResume()**, **onPause()**, **onStop()**, and **onDestroy()**.
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+}
+```
+
+#### **2. Saving and Restoring Instance State for Data Persistence**
+- You can save data during lifecycle changes using `onSaveInstanceState()` and restore it using `onRestoreInstanceState()`.
+
+```kotlin
+override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putString("key", "value")
+}
+
+override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    super.onRestoreInstanceState(savedInstanceState)
+    val value = savedInstanceState.getString("key")
+}
+```
+
+#### **3. Handling Implicit and Explicit Intents for Inter-Component Communication**
+- **Explicit intents**: Directly specify the target activity or component.
+- **Implicit intents**: Do not specify the target; the system chooses the appropriate component.
+
+```kotlin
+val intent = Intent(this, SecondActivity::class.java)  // Explicit
+startActivity(intent)
+```
+
+#### **4. Implementing Intuitive Navigation Patterns for a Seamless User Experience**
+- Use **Fragments** for flexible and dynamic UI. Manage navigation with **Back Stack** to preserve the previous activity state.
+
+```kotlin
+supportFragmentManager.beginTransaction()
+    .replace(R.id.fragment_container, NewFragment())
+    .addToBackStack(null)
+    .commit()
+```
+
+---
+
+### **Lecture 6 - Multimedia and Camera**
+
+#### **1. Multimedia and Camera in Android Development**
+- Android supports multimedia features like **audio**, **video**, and **camera access**.
+- **MediaPlayer** and **ExoPlayer** are used for playing audio and video files.
+
+```kotlin
+val mediaPlayer = MediaPlayer.create(this, R.raw.audio_file)
+mediaPlayer.start()
+```
+
+#### **2. Playing Audio and Video Using MediaPlayer and ExoPlayer**
+- **ExoPlayer** is an advanced media player that supports more features than `MediaPlayer`.
+
+```kotlin
+val exo
+
+Player = SimpleExoPlayer.Builder(this).build()
+exoPlayer.setMediaItem(MediaItem.fromUri("video_url"))
+exoPlayer.prepare()
+exoPlayer.play()
+```
+
+#### **3. Working with Camera and Camera2 API**
+- The **Camera API** provides access to the device camera for capturing images and videos.
+- The **Camera2 API** provides more control over camera settings like focus, exposure, and more.
+
+```kotlin
+val camera = Camera.open()
+```
 
 
 
