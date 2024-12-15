@@ -284,6 +284,8 @@ public class MyViewModel extends ViewModel {
 
 `Section B`
 
+## top imp - Data Storage
+
 ### Q1. Describe the different data storage options in Android based on size, complexity, and persistence needs, such as Shared Preferences, SQLite, and others.
 
 **Data Storage Options in Android:**
@@ -388,6 +390,8 @@ public class MyViewModel extends ViewModel {
    ```
 
 ---
+
+## top imp - Dao question
 
 ### Q2. Explain how Room DAOs are used for CRUD (Create, Read, Update, Delete) operations in a Room Database. Provide code examples.
 
@@ -1793,6 +1797,8 @@ val textView = findViewById<TextView>(R.id.textView)
 textView.text = "User input: $input"
 ```
 
+## top imp - Input Output Ops
+
 #### **File I/O Operations**
 - **Reading** and **writing** files from internal or external storage using **File** class or **FileInputStream**/**FileOutputStream**.
 
@@ -2738,6 +2744,8 @@ A **memory leak** occurs when an object is no longer needed but isn't garbage co
 
 ---
 
+## top imp - maps
+
 ### Q.2 **Describe the steps to integrate Google Maps API into an Android app. How can markers, routes, and camera positioning be used to enhance the map experience?**
 
 ### **Steps to Integrate Google Maps API**
@@ -2871,6 +2879,8 @@ A **memory leak** occurs when an object is no longer needed but isn't garbage co
 - Combining these features enhances the user experience, making apps more interactive and informative.
 
 ---
+
+## top imp - sensors
 
 ### Q.3 **How do Android sensors like the accelerometer and gyroscope work? Explain how sensor events are handled and data is read in an Android app.**
 
@@ -3206,6 +3216,8 @@ By following these practices, you can ensure that your Android app runs smoothly
 
 ---
 
+## top imp - alarm
+
 ### Q.2 Explain the process of creating and managing alarms in Android using the AlarmManager. Discuss both one-time and repeating alarms with examples.
 
 The `AlarmManager` in Android is used to schedule tasks at specific times, even if the app is not running. It supports both **one-time alarms** and **repeating alarms**.
@@ -3218,6 +3230,10 @@ The `AlarmManager` in Android is used to schedule tasks at specific times, even 
 
 ### **1. Creating a One-Time Alarm**
 A one-time alarm triggers at a specific time.
+
+### key methods
+- `void set(int type, long triggerAtMillis, PendingIntent operation)`
+- `public static PendingIntent getBroadcast(Context context, int requestCode, Intent intent, int flags)`
 
 #### **Code Example**
 ```java
@@ -5055,6 +5071,8 @@ fun fetchData() {
 
 ---
 
+## top imp - Network and APIs
+
 ### Lecture 29: Networking Fundamentals and API Handling
 
 #### 1. **Networking Fundamentals**
@@ -5252,7 +5270,7 @@ fis.close();
 String fileContent = stringBuilder.toString();
 ```
 
-##### Example of File I/O in Internal Storage (Kotlin):
+<!-- ##### Example of File I/O in Internal Storage (Kotlin):
 ```kotlin
 // Writing to a file
 val fos = openFileOutput("example.txt", Context.MODE_PRIVATE)
@@ -5269,7 +5287,7 @@ while (fis.read().also { character = it } != -1) {
 }
 fis.close()
 val fileContent = stringBuilder.toString()
-```
+``` -->
 
 ##### File Operations in External Storage:
 To work with external storage, you must request permissions (`READ_EXTERNAL_STORAGE`, `WRITE_EXTERNAL_STORAGE`) and check whether the external storage is available.
@@ -5395,6 +5413,7 @@ inputStream.close()
 
 ---
 
+## top imp - Services
 
 ### Lecture 31: Background Services and Broadcast Receivers
 
@@ -5856,6 +5875,8 @@ Room is an abstraction layer over SQLite that provides an easier and more effici
    ```
 
 ---
+
+## top imp - DAO and room
 
 #### **Creating a Room Database**
 
