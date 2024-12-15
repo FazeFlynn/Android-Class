@@ -723,6 +723,8 @@ You use `getSupportFragmentManager()` to properly obtain and manage fragments in
 
 ---
 
+## ## top imp - mvvm
+
 ### Q3. What is the MVVM architecture in Android? Explain the role of ViewModels as central data stores for UI data with a practical example.
 
 **MVVM Architecture:**
@@ -892,6 +894,7 @@ This shows how coroutines help in writing asynchronous code in Kotlin.
 
 ---
 
+
 ### Q3. What are coroutines, and why are they useful in Android development?
 
 - **Coroutines**:
@@ -980,6 +983,8 @@ In the manifest:
 ```
 
 `Section B`
+
+## top imp - coroutines
 
 ### Q1. Explain how coroutines work in Kotlin for Android, including launching and managing coroutines with code examples. Discuss error handling and cancellation using `try-catch`.
 
@@ -1322,6 +1327,7 @@ val serviceConnection = object : ServiceConnection {
 
 bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
 ```
+## top imp - dispatchers
 
 ### Q2. Discuss the concept of dispatchers in coroutines, focusing on `Dispatchers.IO` and `Dispatchers.Main`. Provide examples of how to use them with suspend functions to manage background tasks efficiently.
 
